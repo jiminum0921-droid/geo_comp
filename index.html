@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>감성의 등고선 — 서울 동네 브랜드화의 공간 역학</title>
+<style>
+@font-face {
+  font-family: 'SBAggroB';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SBAggroM';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroM.woff') format('woff');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'omyu';
+  src: url('https://cdn.jsdelivr.net/gh/fontbee/font@main/Omyudiary/omyu_pretty.woff2') format('woff2');
+  font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+
+:root {
+  --bg:    #FDF8F2;
+  --bg2:   #FFFCF8;
+  --lav:   #EDE8FF;
+  --peach: #FFE8DC;
+  --mint:  #D8F5EC;
+  --yel:   #FFF5CC;
+  --pink:  #FFE0EE;
+  --blue:  #DAEEFF;
+  --pur:   #9B8EC4;
+  --coral: #E87E5E;
+  --teal:  #52B898;
+  --gold:  #D4A030;
+  --sky:   #5599CC;
+  --ink:   #3A3030;
+  --ink2:  #7A6868;
+  --line:  #EDE6DC;
+  --title: clamp(26px, 3.8vw, 44px);
+  --body:  20px;
+  --small: 18px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'omyu', sans-serif;
+  overflow-x: hidden;
+}
+
+/* ── 진행 바 ── */
+#prog {
+  position: fixed; top: 0; left: 0; height: 3px;
+  background: linear-gradient(90deg, var(--pur), var(--coral), var(--teal));
+  width: 0%; z-index: 999;
+  transition: width .1s linear;
+  border-radius: 0 2px 2px 0;
+}
+
+/* ── 풀페이지 섹션 ── */
+.page {
+  height: 100vh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 52px 7vw;
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+}
+.page:first-of-type { border-top: none; }
+
+/* ── 공통 타이포 ── */
+.sec-kicker {
+  font-family: 'omyu', sans-serif;
+  font-size: var(--small);
+  color: var(--pur);
+  letter-spacing: .08em;
+  margin-bottom: 8px;
+}
+.sec-title {
+  font-family: 'SBAggroB', sans-serif;
+  font-size: var(--title);
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.sec-title em { font-style: normal; }
+.sec-desc {
+  font-family: 'omyu', sans-serif;
+  font-size: var(--body);
+  color: var(--ink2);
+  line-height: 1.9;
+  max-width: 700px;
+  margin-bottom: 20px;
+}
+
+/* ════════════════════════════
+   P1: 히어로
+════════════════════════════ */
+#p1 {
+  background: linear-gradient(150deg, #F0EBFF 0%, #FFE8DC 40%, #D8F5EC 100%);
+  justify-content: flex-end;
+  padding-bottom: 72px;
+}
+#p1::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 660'%3E%3Cg fill='none' stroke='white' stroke-width='1.2' opacity='0.45'%3E%3Cellipse cx='500' cy='330' rx='460' ry='290'/%3E%3Cellipse cx='500' cy='330' rx='370' ry='222'/%3E%3Cellipse cx='500' cy='330' rx='280' ry='158'/%3E%3Cellipse cx='500' cy='330' rx='195' ry='106'/%3E%3Cellipse cx='500' cy='330' rx='115' ry='62'/%3E%3Cellipse cx='500' cy='330' rx='50' ry='28'/%3E%3Cellipse cx='200' cy='180' rx='130' ry='76'/%3E%3Cellipse cx='200' cy='180' rx='85' ry='48'/%3E%3Cellipse cx='200' cy='180' rx='42' ry='24'/%3E%3Cellipse cx='760' cy='480' rx='150' ry='90'/%3E%3Cellipse cx='760' cy='480' rx='95' ry='56'/%3E%3Cellipse cx='760' cy='480' rx='46' ry='28'/%3E%3Cellipse cx='140' cy='490' rx='95' ry='58'/%3E%3Cellipse cx='140' cy='490' rx='58' ry='35'/%3E%3Cellipse cx='830' cy='130' rx='120' ry='68'/%3E%3Cellipse cx='830' cy='130' rx='72' ry='40'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: center;
+  pointer-events: none;
+}
+.hero-kicker {
+  font-family: 'omyu', sans-serif;
+  font-size: var(--small);
+  color: var(--pur);
+  margin-bottom: 14px;
+  position: relative; z-index: 1;
+}
+.hero-h1 {
+  font-family: 'SBAggroB', sans-serif;
+  font-size: clamp(56px, 9vw, 100px);
+  line-height: 1.0;
+  color: var(--ink);
+  margin-bottom: 18px;
+  position: relative; z-index: 1;
+}
+.hero-h1 em { font-style: normal; color: var(--pur); }
+.hero-desc {
+  font-family: 'omyu', sans-serif;
+  font-size: clamp(18px, 1.8vw, 22px);
+  color: var(--ink2);
+  line-height: 2;
+  max-width: 600px;
+  margin-bottom: 24px;
+  position: relative; z-index: 1;
+}
+.htags { display: flex; flex-wrap: wrap; gap: 8px; position: relative; z-index: 1; }
+.htag {
+  font-family: 'omyu', sans-serif;
+  font-size: var(--body);
+  padding: 7px 18px;
+  border-radius: 99px;
+}
+.scroll-hint {
+  position: absolute; bottom: 24px; left: 50%;
+  transform: translateX(-50%);
+  font-family: 'omyu', sans-serif;
+  font-size: 14px; color: var(--ink2); opacity: .4;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  animation: bob 2s ease-in-out infinite;
+  z-index: 1;
+}
+.scroll-hint::after {
+  content: ''; width: 1px; height: 32px;
+  background: linear-gradient(var(--ink2), transparent);
+}
+@keyframes bob {
+  0%,100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(-5px); }
+}
+
+/* ── 지리적 개념 ── */
+#p2 { background: var(--lav); }
+.concept-grid {
+  display: grid;
+  grid-template-columns: 1fr 40px 1fr 40px 1fr;
+  gap: 0;
+  align-items: start;
+  margin: 20px 0;
+}
+.concept-item {
+  padding: 20px 22px;
+  background: rgba(255,255,255,.65);
+  border-radius: 18px;
+}
+.concept-arrow {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; color: var(--pur); opacity: .55;
+  padding-top: 20px;
+}
+.concept-num {
+  font-family: 'SBAggroB', sans-serif;
+  font-size: 32px; color: var(--pur); opacity: .15;
+  line-height: 1; margin-bottom: 5px;
+}
+.concept-name {
+  font-family: 'SBAggroB', sans-serif;
+  font-size: 20px; color: var(--ink); margin-bottom: 8px;
+}
+.concept-desc {
+  font-family: 'omyu', sans-serif;
+  font-size: var(--body); color: var(--ink2); line-height: 1.85;
+}
+.concept-summary {
+  background: rgba(155,142,196,.15);
+  border-radius: 16px;
+  padding: 16px 22px;
+  font-family: 'omyu', sans-serif;
+  font-size: var(--body);
+  color: var(--ink);
+  line-height: 1.9;
+  border-left: 3px solid var(--pur);
+}
+
+/* ── 장소성 분석 ── */
+#p3 { background: var(--bg2); }
+.place-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 16px;
+}
+.place-card {
+  background: var(--bg);
+  border-radius: 18px;
+  padding: 20px 18px;
+  border: 1px solid var(--line);
+}
+.place-top {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+}
+.place-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.place-name { font-family: 'SBAggroB', sans-serif; font-size: 20px; color: var(--ink); }
+.place-sub  { font-family: 'omyu', sans-serif; font-size: var(--small); color: var(--ink2); margin-top: 1px; }
+.factor-list { display: flex; flex-direction: column; gap: 10px; }
+.factor { display: flex; gap: 10px; align-items: flex-start; }
+.factor-icon {
+  width: 28px; height: 28px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.factor-title {
+  font-family: 'SBAggroM', sans-serif;
+  font-size: var(--small); color: var(--ink); margin-bottom: 3px;
+}
+.factor-desc {
+  font-family: 'omyu', sans-serif;
+  font-size: var(--body); color: var(--ink2); line-height: 1.75;
+}
+.bar-sm { height: 5px; border-radius: 99px; margin-top: 4px; opacity: .6; }
+.place-footer {
+  margin-top: 14px;
+  font-family: 'omyu', sans-serif;
+  font-size: var(--body); color: var(--ink); line-height: 1.9;
+  padding-top: 12px; border-top: 1px solid var(--line);
+}
+
+/* ── 감성 점수 지도 (hotplace_map.html) ── */
+#p4 { background: var(--bg); padding-top: 44px; padding-bottom: 40px; }
+.score-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.8fr;
+  gap: 18px;
+  margin-top: 8px;
+  height: calc(100vh - 220px);
+}
+.score-left { display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+.score-method {
+  background: var(--lav); border-radius: 16px; padding: 16px 18px; flex-shrink: 0;
+}
+.score-method-title {
+  font-family: 'SBAggroM', sans-serif;
+  font-size: var(--small); color: var(--pur); margin-bottom: 8px;
+}
+.score-method-desc {
+  font-family: 'omyu', sans-serif;
+  font-size: var(--body); color: var(--ink2); line-height: 1.8;
+}
+.rank-wrap {
+  background: var(--blue); border-radius: 16px; padding: 18px 18px; flex-shrink: 0;
+}
+.rank-title {
+  font-family: 'SBAggroB', sans-serif;
+  font-size: 20px; color: var(--ink); margin-bottom: 14px;
+}
+.rank-row {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+}
+.rank-row:last-child { margin-bottom: 0; }
+.rank-lbl {
+  font-family: 'omyu', sans-serif;
+  font-size: var(--body); color: var(--ink); width: 56px; flex-shrink: 0;
+}
+.rank-track {
+  flex: 1; height: 13px;
+  background: rgba(255,255,255,.6);
+  border-radius: 99px; overflow: hidden;
+}
+.rank-fill {
+  height: 100%; border-radius: 99px;
+  transition: width 1.4s cubic-bezier(.16,1,.3,1); width: 0;
+}
+.rank-val {
+  font-family: 'SBAggroB', sans-serif;
+  font-size: var(--small); color: var(--ink2); width: 38px; text-align: right;
+}
+.map-frame {
+  border-radius: 20px;
+  overflow: hidden;
+  background: #1a1728;
+  height: 100%;
+  min-height: 360px;
+}
+.map-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* ── LISA 분석 (Canvas) ── */
+#p5 {
+  background: linear-gradient(160deg, #F0EBFF 0%, #D8F5EC 100%);
+  padding-top: 44px; padding-bottom: 40px;
+}
+.lisa-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 18px;
+  margin-top: 8px;
+  height: calc(100vh - 200px);
+}
+.lisa-left { display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+.moran-card {
+  background: rgba(255,255,255,.75);
+  border-radius: 16px; padding: 16px 18px;
+  border: 1px solid var(--line); flex-shrink: 0;
+}
+.moran-val {
+  font-family: 'SBAggroB', sans-serif;
+  font-size: 34px; color: var(--teal); line-height: 1; margin-bottom: 6px;
+}
+.moran-meta {
+  font-family: 'omyu', sans-serif;
+  font-size: var(--body); color: var(--ink2); line-height: 1.8;
+}
+.lisa-legend { display: flex; flex-direction: column; gap: 7px; }
+.leg-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,.65);
+  border-radius: 12px;
+}
+.leg-sq { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
+.leg-name {
+  font-family: 'SBAggroM', sans-serif;
+  font-size: var(--small); color: var(--ink); width: 80px;
+}
+.leg-desc {
+  font-family: 'omyu', sans-serif;
+  font-size: var(--body); color: var(--ink2); line-height: 1.5;
+}
+.canvas-box {
+  background: #1a1728;
+  border-radius: 20px;
+  padding: 14px;
+  height: 100%;
+  min-height: 380px;
+  position: relative;
+}
+.canvas-box canvas {
+  position: absolute;
+  top: 14px; left: 14px;
+  width: calc(100% - 28px) !important;
+  height: calc(100% - 28px) !important;
+  border-radius: 12px;
+}
+
+/* ── 지역별 클로즈업 ── */
+.region-page { background: var(--bg2); }
+.region-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 18px;
+  margin-top: 8px;
+  height: calc(100vh - 200px);
+}
+.region-info {
+  display: flex; flex-direction: column; gap: 10px; overflow: hidden;
+}
+.cluster-tag {
+  display: inline-block;
+  font-family: 'SBAggroM', sans-serif;
+  font-size: var(--small);
+  padding: 5px 16px; border-radius: 99px;
+}
+.region-score {
+  font-family: 'omyu', sans-serif;
+  font-size: var(--small); color: var(--ink2);
+}
+.region-name {
+  font-family: 'SBAggroB', sans-serif;
+  font-size: var(--title); color: var(--ink);
+}
+.region-desc {
+  font-family: 'omyu', sans-serif;
+  font-size: var(--body); color: var(--ink2); line-height: 1.9;
+}
+.region-places { display: flex; flex-wrap: wrap; gap: 7px; }
+.rplace {
+  font-family: 'omyu', sans-serif;
+  font-size: var(--body);
+  padding: 5px 14px; border-radius: 99px;
+  background: rgba(0,0,0,.04);
+  color: var(--ink2); border: 1px solid var(--line);
+}
+.region-canvas-box {
+  border-radius: 20px;
+  overflow: hidden;
+  background: #1a1728;
+  height: 100%;
+  min-height: 360px;
+}
+.region-canvas-box iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* ── 분석 흐름 ── */
+#p9 { background: var(--bg); }
+.steps { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+.step {
+  display: flex; gap: 16px; align-items: flex-start;
+  background: var(--bg2); border: 1px solid var(--line);
+  border-radius: 18px; padding: 16px 20px;
+}
+.step-n {
+  font-family: 'SBAggroB', sans-serif;
+  font-size: 28px; line-height: 1; flex-shrink: 0; width: 36px; margin-top: 2px;
+}
+.step-title {
+  font-family: 'SBAggroM', sans-serif;
+  font-size: 20px; color: var(--ink); margin-bottom: 5px;
+}
+.step-desc {
+  font-family: 'omyu', sans-serif;
+  font-size: var(--body); color: var(--ink2); line-height: 1.85;
+}
+
+/* ── 결론 ── */
+#p10 {
+  background: linear-gradient(150deg, var(--yel) 0%, var(--peach) 60%, var(--pink) 100%);
+}
+.result-box {
+  background: rgba(255,255,255,.6);
+  border-radius: 24px; padding: 28px 26px;
+  position: relative; overflow: hidden;
+  border: 1px solid rgba(255,255,255,.8);
+  max-width: 820px;
+}
+.result-box::after {
+  content: "★";
+  position: absolute; bottom: 12px; right: 22px;
+  font-size: 80px; opacity: .08; line-height: 1;
+}
+.result-badge {
+  font-family: 'omyu', sans-serif;
+  font-size: var(--body); color: var(--coral); margin-bottom: 10px;
+}
+.result-name {
+  font-family: 'SBAggroB', sans-serif;
+  font-size: clamp(26px, 3.5vw, 42px);
+  color: var(--ink); margin-bottom: 14px; line-height: 1.15;
+}
+.result-desc {
+  font-family: 'omyu', sans-serif;
+  font-size: var(--body); color: var(--ink2); line-height: 2; margin-bottom: 16px;
+}
+.kws { display: flex; flex-wrap: wrap; gap: 8px; }
+.kw {
+  font-family: 'omyu', sans-serif;
+  font-size: var(--body);
+  padding: 6px 15px; border-radius: 99px;
+  background: rgba(255,255,255,.7);
+  color: var(--ink2); border: 1px solid rgba(0,0,0,.06);
+}
+
+/* ── 리빌 애니메이션 ── */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.vis { opacity: 1; transform: translateY(0); }
+
+/* ── 모바일 ── */
+@media (max-width: 768px) {
+  .page { height: auto; min-height: 100vh; scroll-snap-align: none; }
+  .score-layout, .lisa-layout, .region-layout { grid-template-columns: 1fr; height: auto; }
+  .place-grid, .concept-grid { grid-template-columns: 1fr; }
+  .concept-arrow { display: none; }
+  .map-frame { height: 320px; }
+  .canvas-box, .region-canvas-box { height: 340px; min-height: 340px; }
+}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+
+<!-- ════ P1: 히어로 ════ -->
+<section class="page" id="p1">
+  <p class="hero-kicker reveal">2026 대한지리학회 AI 활용 지리학 콘텐츠 공모전</p>
+  <h1 class="hero-h1 reveal">감성의 등고선</h1>
+  <p class="hero-desc reveal">
+    핫플레이스만의 "감성"을 지도로 표현할 수 있지 않을까?<br>
+    성수가 힙해진 건 우연인가, 아니면 공간적 법칙이 있는가?<br>
+    힙하다는 감성은 추상적으로만 느껴지지만, 사실 공간 데이터에 흔적이 남아 있습니다.<br>
+    AI와 공간통계로 서울 동네 브랜드화의 숨겨진 경로를 추적했습니다.
+  </p>
+  <div class="htags reveal">
+    <span class="htag" style="background:rgba(155,142,196,.25);color:var(--pur);">H3 격자 분석</span>
+    <span class="htag" style="background:rgba(82,184,152,.2);color:var(--teal);">LISA 공간통계</span>
+    <span class="htag" style="background:rgba(232,126,94,.2);color:var(--coral);">다음 힙 골목 예측</span>
+    <span class="htag" style="background:rgba(85,153,204,.2);color:var(--sky);">블로그 732개 분석</span>
+  </div>
+  <div class="scroll-hint">scroll</div>
+</section>
+
+<!-- ════ P2: 지리적 개념 ════ -->
+<section class="page" id="p2">
+  <div class="reveal">
+    <p class="sec-kicker">ACT 01 · 지리적 개념</p>
+    <h2 class="sec-title">장소에는 <em style="color:var(--pur);">문법</em>이 있습니다</h2>
+  </div>
+  <div class="concept-grid reveal">
+    <div class="concept-item">
+      <div class="concept-num">01</div>
+      <div class="concept-name">장소성</div>
+      <div class="concept-desc">동네마다 고유한 분위기와 언어가 존재합니다. 을지로는 레트로, 성수는 인더스트리얼, 이태원은 이국적 감성입니다.</div>
+    </div>
+    <div class="concept-arrow">→</div>
+    <div class="concept-item">
+      <div class="concept-num">02</div>
+      <div class="concept-name">장소 브랜딩</div>
+      <div class="concept-desc">그 "장소성"을 기업들이 활용하면 동네의 이미지가 브랜드 자산이 됩니다. 성수의 팝업, 을지로의 힙지로가 대표적입니다.</div>
+    </div>
+    <div class="concept-arrow">→</div>
+    <div class="concept-item">
+      <div class="concept-num">03</div>
+      <div class="concept-name">소비공간</div>
+      <div class="concept-desc">공간 경험 자체가 상품이 됩니다. 유동인구와 SNS 형태로 증명됩니다. 사람들은 장소를 소비하러 옵니다.</div>
+    </div>
+  </div>
+  <div class="concept-summary reveal">
+    그래서 저희는 총 블로그 <strong>732개 포스트</strong>를 분석하여 공간의 감성 군집을 측정하고,<br>
+    각 동네의 감성의 정도와 그 퍼짐을 <strong>격자 단위 지도</strong>로 표현해봤습니다.
+  </div>
+</section>
+
+<!-- ════ P3: 장소성 분석 ════ -->
+<section class="page" id="p3">
+  <div class="reveal">
+    <p class="sec-kicker">ACT 02 · 장소성 분석</p>
+    <h2 class="sec-title">왜 그 동네는 <em style="color:var(--pur);">그 동네답게</em> 느껴질까요</h2>
+    <p class="sec-desc">블로그 포스트 분석 결과 아래와 같은 키워드가 발견됐습니다. 각 핫플레이스의 장소성은 지리적 맥락에 의해 생성되고 소비됩니다.</p>
+  </div>
+  <div class="place-grid reveal">
+    <div class="place-card">
+      <div class="place-top">
+        <div class="place-dot" style="background:var(--pur);"></div>
+        <div>
+          <div class="place-name">을지로</div>
+          <div class="place-sub">레트로 · 힙지로 · 회식 문화</div>
+        </div>
+      </div>
+      <div class="factor-list">
+        <div class="factor">
+          <div class="factor-icon" style="background:var(--lav);">🏢</div>
+          <div class="factor-body">
+            <div class="factor-title">구도심 업무 중심 지역에 위치</div>
+            <div class="factor-desc">직장인 유동인구가 저녁 상권을 견인합니다.</div>
+            <div class="bar-sm" style="width:85%;background:var(--pur);"></div>
+          </div>
+        </div>
+        <div class="factor">
+          <div class="factor-icon" style="background:var(--lav);">🏚</div>
+          <div class="factor-body">
+            <div class="factor-title">건물 노후도 높음 + 직장인 회식 2차 문화</div>
+            <div class="factor-desc">1970~80년대 공장 건물이 남아 레트로 감성의 기반을 형성합니다.</div>
+            <div class="bar-sm" style="width:92%;background:var(--pur);"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="place-card">
+      <div class="place-top">
+        <div class="place-dot" style="background:var(--coral);"></div>
+        <div>
+          <div class="place-name">이태원</div>
+          <div class="place-sub">이국적 · 글로벌 · 야간 문화</div>
+        </div>
+      </div>
+      <div class="factor-list">
+        <div class="factor">
+          <div class="factor-icon" style="background:var(--peach);">📐</div>
+          <div class="factor-body">
+            <div class="factor-title">언덕 지형이 만드는 골목 구조</div>
+            <div class="factor-desc">경사 지형이 골목을 만들고 탐색 욕구를 자극합니다.</div>
+            <div class="bar-sm" style="width:90%;background:var(--coral);"></div>
+          </div>
+        </div>
+        <div class="factor">
+          <div class="factor-icon" style="background:var(--peach);">🌍</div>
+          <div class="factor-body">
+            <div class="factor-title">다국적 업종 밀도 최고</div>
+            <div class="factor-desc">외국계 식당·루프탑 바·빈티지숍 밀도가 서울 최고 수준입니다.</div>
+            <div class="bar-sm" style="width:100%;background:var(--coral);"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="place-card">
+      <div class="place-top">
+        <div class="place-dot" style="background:var(--teal);"></div>
+        <div>
+          <div class="place-name">성수동</div>
+          <div class="place-sub">인더스트리얼 · 팝업 · 브런치</div>
+        </div>
+      </div>
+      <div class="factor-list">
+        <div class="factor">
+          <div class="factor-icon" style="background:var(--mint);">🏭</div>
+          <div class="factor-body">
+            <div class="factor-title">과거 높은 층고의 공장 건물 → 팝업에 최적화</div>
+            <div class="factor-desc">준공업지역 공장 건물이 카페·팝업 공간으로 전환됩니다.</div>
+            <div class="bar-sm" style="width:88%;background:var(--teal);"></div>
+          </div>
+        </div>
+        <div class="factor">
+          <div class="factor-icon" style="background:var(--mint);">🌳</div>
+          <div class="factor-body">
+            <div class="factor-title">서울숲과의 접근성</div>
+            <div class="factor-desc">서울숲 인접이 주말 피크닉 유동인구를 끌어들입니다.</div>
+            <div class="bar-sm" style="width:82%;background:var(--teal);"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="place-footer reveal">
+    이처럼 각 핫플레이스의 장소성은 각각 <strong>지리적 맥락</strong>에 의해 생성되고 소비됩니다.
+  </div>
+</section>
+
+<!-- ════ P4: 감성 점수 + hotplace_map.html ════ -->
+<section class="page" id="p4">
+  <div class="reveal">
+    <p class="sec-kicker">ACT 03 · 감성 점수 분석</p>
+    <h2 class="sec-title">격자 단위로 나눈 <em style="color:var(--coral);">감성 점수</em></h2>
+    <p class="sec-desc">H3 격자 단위로 나눠 행정동보다 더 세밀하게 감성 중심지를 확인했습니다. <strong>이태원이 가장 감성 점수가 높았습니다.</strong></p>
+  </div>
+  <div class="score-layout reveal">
+    <div class="score-left">
+      <div class="score-method">
+        <div class="score-method-title">감성 점수 집계 방법</div>
+        <div class="score-method-desc">
+          ① 블로그에서 Claude AI로 장소명·감성 키워드 추출<br>
+          ② 카카오 API로 장소 좌표 변환 (지오코딩)<br>
+          ③ H3 resolution 9 격자(약 0.1km²)에 장소 귀속<br>
+          ④ 격자별 감성 키워드 가중 합산 → 0~100점 정규화
+        </div>
+      </div>
+      <div class="rank-wrap">
+        <div class="rank-title">동네별 최고 감성 점수</div>
+        <div class="rank-row">
+          <div class="rank-lbl">이태원</div>
+          <div class="rank-track"><div class="rank-fill" style="background:var(--coral);" data-w="100"></div></div>
+          <div class="rank-val">100</div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-lbl">을지로</div>
+          <div class="rank-track"><div class="rank-fill" style="background:var(--pur);" data-w="66.7"></div></div>
+          <div class="rank-val">66.7</div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-lbl">성수동</div>
+          <div class="rank-track"><div class="rank-fill" style="background:var(--teal);" data-w="56"></div></div>
+          <div class="rank-val">56</div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-lbl">홍대</div>
+          <div class="rank-track"><div class="rank-fill" style="background:var(--sky);" data-w="22.7"></div></div>
+          <div class="rank-val">22.7</div>
+        </div>
+      </div>
+    </div>
+    <div class="map-frame">
+      <iframe
+        src="hotplace_map.html"
+        title="감성 점수 인터랙티브 지도"
+        loading="lazy"
+        allow="fullscreen">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ════ P5: LISA 분석 ════ -->
+<section class="page" id="p5">
+  <div class="reveal">
+    <p class="sec-kicker">ACT 04 · 공간 자기상관 분석</p>
+    <h2 class="sec-title">감성은 공간에서 <em style="color:var(--teal);">군집하고 전파</em>됩니다</h2>
+    <p class="sec-desc">Moran's I와 LISA 분석을 통해 감성이 군집 구조를 가진다는 것을 데이터로 확인했습니다.</p>
+  </div>
+  <div class="lisa-layout reveal">
+    <div class="lisa-left">
+      <div class="moran-card">
+        <div class="moran-val">I = 0.2335</div>
+        <div class="moran-meta">p = 0.050 · 격자 45개<br>감성은 공간적으로 군집합니다</div>
+      </div>
+      <div class="lisa-legend">
+        <div class="leg-item">
+          <div class="leg-sq" style="background:#7B5FDC;"></div>
+          <div class="leg-name">감성 핵심</div>
+          <div class="leg-desc">내 격자도 높고 이웃도 높음. 브랜드화 완성 구역.</div>
+        </div>
+        <div class="leg-item">
+          <div class="leg-sq" style="background:#E87E5E;"></div>
+          <div class="leg-name">전파 중</div>
+          <div class="leg-desc">내 격자는 낮지만 이웃이 높음. 감성 유입 중.</div>
+        </div>
+        <div class="leg-item">
+          <div class="leg-sq" style="background:#8899AA;"></div>
+          <div class="leg-name">미도달</div>
+          <div class="leg-desc">내 격자도 낮고 이웃도 낮음. 감성 미형성 구역.</div>
+        </div>
+        <div class="leg-item">
+          <div class="leg-sq" style="background:#D4A030;"></div>
+          <div class="leg-name">고립 핫스팟</div>
+          <div class="leg-desc">내 격자는 높지만 이웃이 낮음. 고립된 힙스팟.</div>
+        </div>
+      </div>
+    </div>
+    <div class="canvas-box" id="box-main">
+      <canvas id="mapC"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ════ P6: 을지로 클로즈업 ════ -->
+<section class="page region-page" id="p6">
+  <div class="reveal">
+    <p class="sec-kicker">ACT 05 · 지역별 분석</p>
+    <h2 class="sec-title region-name" style="color:var(--pur);">을지로</h2>
+  </div>
+  <div class="region-layout reveal">
+    <div class="region-info">
+      <span class="cluster-tag" style="background:var(--lav);color:var(--pur);">감성 핵심</span>
+      <div class="region-score">감성 점수 66.7점</div>
+      <div class="region-desc">
+        달맞이광장바베큐·을지로보석·백염막창 구역이 감성 핵심으로 분류됐습니다.<br>
+        구도심 업무지구 특성으로 직장인 저녁 유동인구가 많고, 노후 건물이 레트로 감성의 물리적 기반을 형성합니다.<br>
+        이미 브랜드화가 완성 단계에 있으며 임대료가 상승 중입니다.
+      </div>
+      <div class="region-places">
+        <span class="rplace">달맞이광장바베큐</span>
+        <span class="rplace">을지로보석</span>
+        <span class="rplace">백염막창</span>
+        <span class="rplace">페이퍼크레인</span>
+        <span class="rplace">떼르세로</span>
+      </div>
+    </div>
+    <div class="region-canvas-box">
+      <iframe src="aesthetic_map.html?nbhd=을지로" title="을지로 인터랙티브 감성 지리 분석 지도" loading="lazy" allow="fullscreen"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ════ P7: 이태원 클로즈업 ════ -->
+<section class="page region-page" id="p7" style="background:var(--peach);">
+  <div class="reveal">
+    <p class="sec-kicker">ACT 06 · 지역별 분석</p>
+    <h2 class="sec-title region-name" style="color:var(--coral);">이태원</h2>
+  </div>
+  <div class="region-layout reveal">
+    <div class="region-info">
+      <span class="cluster-tag" style="background:rgba(232,126,94,.2);color:var(--coral);">전파 중 — 다음 힙 골목 후보</span>
+      <div class="region-score">감성 점수 최고 100점</div>
+      <div class="region-desc">
+        와이키키유토피아·이코복스커피 격자가 100점으로 전체 1위입니다.<br>
+        바로 인접한 <strong>야상해·아지양 구역</strong>이 전파 중 클러스터로 분류됐습니다.<br>
+        이웃 격자의 높은 감성이 이 구역으로 전파되고 있으며, 현재 임대료가 낮아 진입 장벽이 낮습니다.
+      </div>
+      <div class="region-places">
+        <span class="rplace" style="border-color:var(--coral);color:var(--coral);">야상해 ← 전파 중</span>
+        <span class="rplace" style="border-color:var(--coral);color:var(--coral);">아지양 ← 전파 중</span>
+        <span class="rplace">와이키키유토피아</span>
+        <span class="rplace">이코복스커피</span>
+        <span class="rplace">별밤포차</span>
+      </div>
+    </div>
+    <div class="region-canvas-box">
+      <iframe src="aesthetic_map.html?nbhd=이태원" title="이태원 인터랙티브 감성 지리 분석 지도" loading="lazy" allow="fullscreen"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ════ P8: 성수·홍대 클로즈업 ════ -->
+<section class="page region-page" id="p8" style="background:var(--mint);">
+  <div class="reveal">
+    <p class="sec-kicker">ACT 07 · 지역별 분석</p>
+    <h2 class="sec-title region-name" style="color:var(--teal);">성수동 · 홍대</h2>
+  </div>
+  <div class="region-layout reveal">
+    <div class="region-info">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div>
+          <span class="cluster-tag" style="background:rgba(82,184,152,.2);color:var(--teal);">비유의 다수</span>
+          <div class="region-score" style="margin-top:4px;">성수동 최고 56점</div>
+          <div class="region-desc" style="margin-top:6px;">성수동은 개별 격자 점수는 높지만 인접 격자와의 공간 자기상관이 유의하지 않습니다. 팝업 위주 단기 감성 집적 특성이 반영된 결과입니다.</div>
+        </div>
+        <div>
+          <span class="cluster-tag" style="background:rgba(85,153,204,.2);color:var(--sky);">감성 점수 낮음</span>
+          <div class="region-score" style="margin-top:4px;">홍대 최고 22.7점</div>
+          <div class="region-desc" style="margin-top:6px;">홍대는 감성 점수 자체가 낮고 공간 군집도 형성되지 않았습니다. 대형 프랜차이즈 중심 상권 전환이 독립 감성을 희석시킨 것으로 분석됩니다.</div>
+        </div>
+      </div>
+      <div class="region-places" style="margin-top:6px;">
+        <span class="rplace">베통 성수 56점</span>
+        <span class="rplace">도토리오븐 34.7점</span>
+        <span class="rplace">훌리건커피 22.7점</span>
+      </div>
+    </div>
+    <div class="region-canvas-box">
+      <iframe src="aesthetic_map.html?nbhd=성수동" title="성수동 및 홍대 인터랙티브 감성 지리 분석 지도" loading="lazy" allow="fullscreen"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ════ P9: 분석 흐름 ════ -->
+<section class="page" id="p9">
+  <div class="reveal">
+    <p class="sec-kicker">ACT 08 · 분석 흐름</p>
+    <h2 class="sec-title">어떻게 <em style="color:var(--pur);">분석</em>했습니까</h2>
+  </div>
+  <div class="steps reveal">
+    <div class="step">
+      <div class="step-n" style="color:var(--pur);">01</div>
+      <div>
+        <div class="step-title">블로그 수집 + Claude AI 감성 분석</div>
+        <div class="step-desc">네이버 블로그 732개 포스트를 수집해서 Claude AI로 장소명과 감성 키워드를 추출했습니다. 프롬프트: "이 동네 블로그에 자주 등장하는 실제 카페·식당·골목 이름 8개를 JSON으로 추출해줘"</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n" style="color:var(--teal);">02</div>
+      <div>
+        <div class="step-title">지오코딩 → H3 격자 감성 점수 계산</div>
+        <div class="step-desc">카카오 로컬 API로 장소 좌표를 구하고, H3 resolution 9 격자(약 0.1km²)에 집계해서 격자별 감성 점수를 만들었습니다. 총 45개 격자를 분석했습니다.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n" style="color:var(--coral);">03</div>
+      <div>
+        <div class="step-title">Global Moran's I + LISA 공간 자기상관 분석</div>
+        <div class="step-desc">pysal/esda 라이브러리로 H3 인접 격자 기반 가중치 행렬을 구성하고, Moran's I와 LISA로 감성 핵심·전파 중·미도달·고립 핫스팟 클러스터를 탐지했습니다.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ P10: 결론 ════ -->
+<section class="page" id="p10">
+  <div class="reveal">
+    <p class="sec-kicker">ACT 09 · 결론</p>
+    <h2 class="sec-title">장소성은 <em style="color:var(--coral);">데이터</em>로 읽힙니다</h2>
+  </div>
+  <div class="result-box reveal">
+    <div class="result-badge">장소성 형성 → 공간 데이터 시각화 → 다음 힙 골목 예측</div>
+    <div class="result-name">다음 힙 골목은 이태원입니다</div>
+    <div class="result-desc">
+      각 동네의 장소성은 지형·건물·업종이라는 지리적 맥락에서 형성됩니다.<br>
+      저희는 그 장소성을 블로그 데이터와 H3 격자, 공간통계로 시각화했습니다.<br>
+      분석 결과, 이태원 야상해·아지양 구역이 <strong>전파 중(LH) 격자</strong>로 탐지됐습니다.<br>
+      이웃 격자가 100점인 지금, 임대료가 오르기 전이 바로 그 시점입니다.
+    </div>
+    <div class="kws">
+      <span class="kw">이태원 남쪽 골목</span>
+      <span class="kw">전파 중 클러스터</span>
+      <span class="kw">이웃 감성 100점</span>
+      <span class="kw">낮은 임대료</span>
+      <span class="kw">감성 유입 중</span>
+      <span class="kw">지금 가야 할 골목</span>
+    </div>
+  </div>
+</section>
+
+<script>
+/* ════════════════════════════
+   LISA 데이터
+════════════════════════════ */
+const LISA_DATA = [
+  {lat:37.5653,lng:126.9899,score:66.7, quad:1, places:["달맞이광장바베큐","을지로보석","백염막창"]},
+  {lat:37.5349,lng:126.9923,score:13.3, quad:2, places:["야상해","아지양"]},
+  {lat:37.5410,lng:126.9900,score:2.7,  quad:3, places:["용산구청 일대"]},
+  {lat:37.5391,lng:126.9867,score:2.7,  quad:3, places:["해방촌 소나무길"]},
+  {lat:37.5498,lng:126.9148,score:2.8,  quad:3, places:["앤트러사이트 합정"]},
+  {lat:37.5330,lng:126.9882,score:0.0,  quad:3, places:["녹사평역 일대"]},
+  {lat:37.5312,lng:126.9923,score:9.3,  quad:3, places:["나무아래류"]},
+  {lat:37.5425,lng:126.9554,score:56.0, quad:0, places:["베통 성수","마를리"]},
+  {lat:37.5425,lng:127.0553,score:56.0, quad:0, places:["베통 성수","마를리"]},
+  {lat:37.5434,lng:127.0537,score:34.7, quad:0, places:["도토리오븐","마루마끼"]},
+  {lat:37.5410,lng:127.0564,score:4.0,  quad:0, places:["성수동 bd버거"]},
+  {lat:37.5442,lng:127.0590,score:5.3,  quad:0, places:["용용선생 마라도원"]},
+  {lat:37.5402,lng:127.0599,score:10.7, quad:0, places:["성수율 카페"]},
+  {lat:37.5474,lng:127.0405,score:9.3,  quad:0, places:["스페셜땡스투"]},
+  {lat:37.5486,lng:127.0488,score:5.3,  quad:0, places:["브리비트"]},
+  {lat:37.5637,lng:126.9915,score:49.3, quad:0, places:["페이퍼크레인","떼르세로"]},
+  {lat:37.5655,lng:126.9899,score:28.0, quad:0, places:["달맞이광장바베큐"]},
+  {lat:37.5623,lng:126.9901,score:9.3,  quad:0, places:["루이 티하우스"]},
+  {lat:37.5661,lng:126.9973,score:9.3,  quad:0, places:["카페시나브로"]},
+  {lat:37.5691,lng:126.9786,score:1.3,  quad:0, places:["청계천"]},
+  {lat:37.5675,lng:126.9943,score:10.7, quad:0, places:["끄네들로"]},
+  {lat:37.5341,lng:126.9946,score:100.0,quad:0, places:["와이키키유토피아","이코복스커피"]},
+  {lat:37.5334,lng:126.9917,score:25.3, quad:0, places:["트로이카","와이키키비치포차"]},
+  {lat:37.5409,lng:126.9935,score:5.3,  quad:0, places:["그래픽 이태원"]},
+  {lat:37.5570,lng:126.9235,score:18.7, quad:0, places:["하이디라오 홍대"]},
+  {lat:37.5581,lng:126.9253,score:17.3, quad:0, places:["경의선숲길","오밀"]},
+  {lat:37.5589,lng:126.9177,score:2.7,  quad:0, places:["연남동"]},
+  {lat:37.5450,lng:126.9255,score:12.0, quad:0, places:["만월다방"]},
+  {lat:37.5484,lng:126.9197,score:20.0, quad:0, places:["달콤한거짓말"]},
+  {lat:37.5491,lng:126.9179,score:16.0, quad:0, places:["육지"]},
+  {lat:37.5544,lng:126.9224,score:12.0, quad:0, places:["스시오"]},
+  {lat:37.5559,lng:126.9252,score:22.7, quad:0, places:["훌리건커피","중경식객"]},
+  {lat:37.5560,lng:126.9160,score:9.3,  quad:0, places:["내면의발견"]},
+  {lat:37.5682,lng:126.9987,score:4.0,  quad:0, places:["우래옥"]},
+];
+
+/* ════════════════════════════
+   Canvas 지도 그리기 (메인전체용만 활성화)
+════════════════════════════ */
+function drawMap(boxId, canvasId, data, customBounds) {
+  const box    = document.getElementById(boxId);
+  const canvas = document.getElementById(canvasId);
+  if (!box || !canvas) return;
+
+  const dpr = window.devicePixelRatio || 1;
+  const W = box.clientWidth  - 28;
+  const H = box.clientHeight - 28;
+  if (W <= 0 || H <= 0) return;
+
+  canvas.width  = Math.round(W * dpr);
+  canvas.height = Math.round(H * dpr);
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const b = customBounds || {
+    minLat: Math.min(...data.map(d => d.lat)) - .014,
+    maxLat: Math.max(...data.map(d => d.lat)) + .014,
+    minLng: Math.min(...data.map(d => d.lng)) - .018,
+    maxLng: Math.max(...data.map(d => d.lng)) + .018,
+  };
+  const pad = 30;
+  const toX = lng => pad + (lng - b.minLng) / (b.maxLng - b.minLng) * (W - 2*pad);
+  const toY = lat => pad + (1 - (lat - b.minLat) / (b.maxLat - b.minLat)) * (H - 2*pad);
+
+  ctx.fillStyle = '#1a1728';
+  ctx.fillRect(0, 0, W, H);
+
+  [
+    {lat:37.5447, lng:127.055, r:.006, c:'#9B8EC4', n:'성수동'},
+    {lat:37.556,  lng:126.924, r:.008, c:'#52B898', n:'홍대'},
+    {lat:37.566,  lng:126.992, r:.005, c:'#E87E5E', n:'을지로'},
+    {lat:37.535,  lng:126.994, r:.007, c:'#D4A030', n:'이태원'},
+  ].forEach(({lat, lng, r, c, n}) => {
+    const cx = toX(lng), cy = toY(lat);
+    if (cx < -80 || cx > W+80 || cy < -80 || cy > H+80) return;
+    const rx = r / (b.maxLng - b.minLng) * (W - 2*pad) * 1.5;
+    const ry = r / (b.maxLat - b.minLat) * (H - 2*pad) * 1.2;
+    const g  = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(rx, ry));
+    g.addColorStop(0, c + '44');
+    g.addColorStop(1, 'transparent');
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.14)';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(n, cx, cy - ry * .8);
+  });
+
+  const hhList = data.filter(d => d.quad === 1);
+  const lhList = data.filter(d => d.quad === 2);
+  lhList.forEach(ld => {
+    if (!hhList.length) return;
+    let best = hhList[0], bd = Infinity;
+    hhList.forEach(hd => {
+      const dist = Math.hypot(hd.lat - ld.lat, hd.lng - ld.lng);
+      if (dist < bd) { bd = dist; best = hd; }
+    });
+    const x1 = toX(best.lng), y1 = toY(best.lat);
+    const x2 = toX(ld.lng),   y2 = toY(ld.lat);
+    const cx2 = (x1+x2)/2 + (y2-y1)*.25;
+    const cy2 = (y1+y2)/2 - (x2-x1)*.25;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.quadraticCurveTo(cx2, cy2, x2, y2);
+    ctx.strokeStyle = 'rgba(232,126,94,.65)';
+    ctx.lineWidth   = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    const ang = Math.atan2(y2 - cy2, x2 - cx2);
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - 9*Math.cos(ang-.42), y2 - 9*Math.sin(ang-.42));
+    ctx.lineTo(x2 - 9*Math.cos(ang+.42), y2 - 9*Math.sin(ang+.42));
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(232,126,94,.9)';
+    ctx.fill();
+  });
+
+  const QF = {0:'#3A335588', 1:'#7B5FDCcc', 2:'#E87E5Ecc', 3:'#8899AAcc', 4:'#D4A030cc'};
+  const QS = {0:'#5A5077',   1:'#B09EE8',   2:'#FFAA88',   3:'#AABBCC',   4:'#EEC040'};
+  data.forEach(d => {
+    const x = toX(d.lng), y = toY(d.lat);
+    if (x < -20 || x > W+20 || y < -20 || y > H+20) return;
+    const sz = Math.max(13, 12 + d.score * .09);
+    ctx.beginPath();
+    ctx.roundRect(x - sz/2, y - sz/2, sz, sz, 4);
+    ctx.fillStyle   = QF[d.quad];
+    ctx.fill();
+    ctx.strokeStyle = QS[d.quad];
+    ctx.lineWidth   = 1.5;
+    ctx.stroke();
+    if (d.score > 18) {
+      ctx.fillStyle = 'rgba(255,255,255,.92)';
+      ctx.font = 'bold 8px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(Math.round(d.score), x, y + 3);
+    }
+    if (d.quad === 1 || d.quad === 2) {
+      ctx.fillStyle = d.quad === 1 ? '#D4C0FF' : '#FFCCAA';
+      ctx.font = '8px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(d.places[0] || '', x, y + sz/2 + 11);
+    }
+  });
+}
+
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  document.getElementById('prog').style.width = pct + '%';
+});
+
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: .1 });
+document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+
+const barObs = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) {
+    document.querySelectorAll('.rank-fill').forEach(b => {
+      setTimeout(() => { b.style.width = b.dataset.w + '%'; }, 100);
+    });
+  }
+}, { threshold: .3 });
+const rankWrap = document.querySelector('.rank-wrap');
+if (rankWrap) barObs.observe(rankWrap);
+
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    drawMap('box-main', 'mapC', LISA_DATA, null);
+  }, 200);
+});
+
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    drawMap('box-main', 'mapC', LISA_DATA, null);
+  }, 150);
+});
+</script>
+</body>
+</html>

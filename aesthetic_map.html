@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>서울 동네 감성 지리 분석 — LISA 클러스터 지도</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; background:#0d0d14; color:#e8e6f0; }
+
+  /* 헤더 */
+  #header {
+    position:fixed; top:0; left:0; right:0; z-index:1000;
+    background:rgba(13,13,20,0.92); backdrop-filter:blur(12px);
+    padding:12px 20px; border-bottom:1px solid rgba(160,120,240,0.2);
+    display:flex; align-items:center; gap:16px;
+  }
+  #header h1 { font-size:15px; font-weight:700; color:#c8a8ff; letter-spacing:-0.3px; }
+  #header .subtitle { font-size:11px; color:#8880a0; }
+  .moran-badge {
+    margin-left:auto; background:rgba(160,120,240,0.15); border:1px solid rgba(160,120,240,0.3);
+    border-radius:20px; padding:5px 14px; font-size:11px; color:#c8a8ff;
+  }
+
+  /* 지도 */
+  #map { position:fixed; top:50px; left:0; right:320px; bottom:0; }
+
+  /* 사이드 패널 */
+  #panel {
+    position:fixed; top:50px; right:0; width:320px; bottom:0;
+    background:rgba(13,13,20,0.96); border-left:1px solid rgba(160,120,240,0.15);
+    overflow-y:auto; padding:16px;
+  }
+  .panel-section { margin-bottom:20px; }
+  .panel-title {
+    font-size:11px; font-weight:700; color:#8880a0; letter-spacing:1px;
+    text-transform:uppercase; margin-bottom:10px; padding-bottom:6px;
+    border-bottom:1px solid rgba(160,120,240,0.1);
+  }
+
+  /* 범례 */
+  .legend-item { display:flex; align-items:center; gap:8px; margin-bottom:7px; cursor:pointer; }
+  .legend-dot { width:14px; height:14px; border-radius:3px; flex-shrink:0; }
+  .legend-label { font-size:12px; color:#c8c4d8; }
+  .legend-sub { font-size:10px; color:#6860a0; margin-top:1px; }
+
+  /* 통계 카드 */
+  .stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .stat-card {
+    background:rgba(160,120,240,0.08); border:1px solid rgba(160,120,240,0.15);
+    border-radius:8px; padding:10px 12px;
+  }
+  .stat-value { font-size:20px; font-weight:700; color:#c8a8ff; }
+  .stat-label { font-size:10px; color:#8880a0; margin-top:2px; }
+
+  /* 동네 감성 카드 */
+  .nbhd-card {
+    background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);
+    border-radius:8px; padding:10px 12px; margin-bottom:8px; cursor:pointer;
+    transition: all 0.2s;
+  }
+  .nbhd-card:hover { background:rgba(160,120,240,0.1); border-color:rgba(160,120,240,0.3); }
+  .nbhd-name { font-size:13px; font-weight:700; color:#e0d8f8; }
+  .nbhd-tags { margin-top:5px; display:flex; flex-wrap:wrap; gap:4px; }
+  .tag {
+    background:rgba(160,120,240,0.15); border-radius:10px;
+    padding:2px 8px; font-size:10px; color:#a890e0;
+  }
+  .nbhd-score { margin-top:6px; }
+  .score-bar-bg { background:rgba(255,255,255,0.06); border-radius:3px; height:4px; }
+  .score-bar { background:linear-gradient(90deg,#6040c0,#c8a8ff); border-radius:3px; height:4px; }
+
+  /* 장소 리스트 */
+  .place-item {
+    display:flex; align-items:center; gap:8px;
+    padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.04);
+    cursor:pointer;
+  }
+  .place-item:hover .place-name { color:#c8a8ff; }
+  .place-icon { width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+  .place-name { font-size:12px; color:#c0b8d8; }
+  .place-sub { font-size:10px; color:#6860a0; }
+  .place-score { margin-left:auto; font-size:11px; color:#8880a0; }
+
+  /* 팝업 */
+  .leaflet-popup-content-wrapper {
+    background:#1a1828; border:1px solid rgba(160,120,240,0.3);
+    box-shadow:0 8px 32px rgba(0,0,0,0.5); border-radius:10px; color:#e0d8f8;
+  }
+  .leaflet-popup-tip { background:#1a1828; }
+  .popup-title { font-size:13px; font-weight:700; color:#c8a8ff; margin-bottom:6px; }
+  .popup-row { font-size:11px; color:#9890b8; margin-bottom:3px; }
+  .popup-row span { color:#e0d8f8; }
+  .popup-tags { display:flex; flex-wrap:wrap; gap:4px; margin-top:6px; }
+  .popup-tag { background:rgba(160,120,240,0.15); border-radius:8px; padding:2px 7px; font-size:10px; color:#a890e0; }
+  .popup-highlight { background:rgba(120,200,120,0.15); border:1px solid rgba(120,200,120,0.3); border-radius:6px; padding:5px 8px; margin-top:8px; font-size:11px; color:#90e090; }
+
+  /* 레이어 토글 */
+  .layer-toggles { display:flex; flex-direction:column; gap:6px; }
+  .toggle-row { display:flex; align-items:center; justify-content:space-between; }
+  .toggle-label { font-size:12px; color:#a898c8; }
+  .toggle-switch { position:relative; width:36px; height:20px; }
+  .toggle-switch input { opacity:0; width:0; height:0; }
+  .toggle-slider {
+    position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0;
+    background:#2a2840; border-radius:20px; transition:.3s;
+  }
+  .toggle-slider:before {
+    content:""; position:absolute; height:14px; width:14px;
+    left:3px; bottom:3px; background:#6860a0; border-radius:50%; transition:.3s;
+  }
+  input:checked + .toggle-slider { background:#5040a0; }
+  input:checked + .toggle-slider:before { transform:translateX(16px); background:#c8a8ff; }
+
+  /* 스크롤바 */
+  #panel::-webkit-scrollbar { width:4px; }
+  #panel::-webkit-scrollbar-track { background:transparent; }
+  #panel::-webkit-scrollbar-thumb { background:rgba(160,120,240,0.2); border-radius:2px; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div>
+    <div id="header" style="position:static;background:none;border:none;padding:0;display:block;">
+      <h1>🗺 서울 동네 감성 지리 분석 · LISA 클러스터 지도</h1>
+      <div class="subtitle">SNS 블로그 분석 → H3 격자 집계 → 공간 자기상관 클러스터링</div>
+    </div>
+  </div>
+  <div class="moran-badge" id="moran-badge">Global Moran's I = ...</div>
+</div>
+
+<div id="map"></div>
+
+<div id="panel">
+
+  <!-- 레이어 토글 -->
+  <div class="panel-section">
+    <div class="panel-title">레이어</div>
+    <div class="layer-toggles">
+      <div class="toggle-row">
+        <span class="toggle-label">🔷 H3 감성 히트맵</span>
+        <label class="toggle-switch"><input type="checkbox" id="tog-hex" checked onchange="toggleLayer('hex')"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">🔵 LISA 클러스터</span>
+        <label class="toggle-switch"><input type="checkbox" id="tog-lisa" checked onchange="toggleLayer('lisa')"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">📍 장소 포인트</span>
+        <label class="toggle-switch"><input type="checkbox" id="tog-places" checked onchange="toggleLayer('places')"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">➡️ 감성 전파 방향</span>
+        <label class="toggle-switch"><input type="checkbox" id="tog-arrows" checked onchange="toggleLayer('arrows')"><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- LISA 범례 -->
+  <div class="panel-section">
+    <div class="panel-title">LISA 클러스터 범례</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#7c3aed;"></div><div><div class="legend-label">HH — 감성 핵심 거점</div><div class="legend-sub">내 점수↑, 이웃 점수↑</div></div></div>
+    <div class="legend-item"><div class="legend-dot" style="background:#a78bfa;border:2px dashed #c4b5fd;"></div><div><div class="legend-label">⭐ LH — 감성 전파 중</div><div class="legend-sub">내 점수↓, 이웃 점수↑ → 다음 힙 골목!</div></div></div>
+    <div class="legend-item"><div class="legend-dot" style="background:#374151;"></div><div><div class="legend-label">LL — 감성 미도달</div><div class="legend-sub">내 점수↓, 이웃 점수↓</div></div></div>
+    <div class="legend-item"><div class="legend-dot" style="background:#d97706;"></div><div><div class="legend-label">HL — 고립 힙스팟</div><div class="legend-sub">내 점수↑, 이웃 점수↓</div></div></div>
+    <div class="legend-item"><div class="legend-dot" style="background:#1e1b30;border:1px solid #3a3660;"></div><div><div class="legend-label">Non-significant</div><div class="legend-sub">통계적으로 유의하지 않음</div></div></div>
+  </div>
+
+  <!-- 통계 -->
+  <div class="panel-section">
+    <div class="panel-title">분석 통계</div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-value" id="stat-hex">45</div><div class="stat-label">H3 격자 수</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat-places">76</div><div class="stat-label">분석 장소 수</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat-moran-i">-</div><div class="stat-label">Moran's I</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat-moran-p">-</div><div class="stat-label">p-value</div></div>
+    </div>
+  </div>
+
+  <!-- 동네 감성 -->
+  <div class="panel-section">
+    <div class="panel-title">동네별 감성 프로필</div>
+    <div id="nbhd-list"></div>
+  </div>
+
+  <!-- 장소 리스트 -->
+  <div class="panel-section">
+    <div class="panel-title">주요 장소 <span id="place-filter-label" style="color:#a890e0;font-weight:normal;font-size:10px;"></span></div>
+    <div id="place-list"></div>
+  </div>
+
+</div>
+
+<script>
+// ── 데이터 ────────────────────────────────────────────────────────
+const GEOJSON = {"type": "FeatureCollection", "features": [{"id": "0", "type": "Feature", "properties": {"hex": "8930e1c1223ffff", "place_count": 1, "mention_sum": 3, "aesthetic_raw": 8, "lat": 37.5410612323475, "lng": 127.056424179798, "동네": "성수동", "장소목록": "bd버거", "종류목록": "식당", "score_norm": 4.0, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.192, "local_moran_I": -0.2653027826069707}, "geometry": {"type": "Polygon", "coordinates": [[[127.05982077640554, 37.540583486505795], [127.05907346035944, 37.54210440736146], [127.05734282111261, 37.542321025071956], [127.05635957851044, 37.54101676094635], [127.05710690728733, 37.539495893304746], [127.05883746593787, 37.53927923657555], [127.05982077640554, 37.540583486505795]]]}}, {"id": "1", "type": "Feature", "properties": {"hex": "8930e1c122fffff", "place_count": 1, "mention_sum": 3, "aesthetic_raw": 13, "lat": 37.5402765104495, "lng": 127.059981037334, "동네": "성수동", "장소목록": "성수율 카페", "종류목록": "카페", "score_norm": 10.67, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.211, "local_moran_I": 0.1124013853969962}, "geometry": {"type": "Polygon", "coordinates": [[[127.06229871466223, 37.53884582712001], [127.0615514410678, 37.54036680128603], [127.05982077640554, 37.540583486505795], [127.05883746593787, 37.53927923657555], [127.05958475226934, 37.537758315625574], [127.06131533633368, 37.53754159139071], [127.06229871466223, 37.53884582712001]]]}}, {"id": "2", "type": "Feature", "properties": {"hex": "8930e1c1233ffff", "place_count": 4, "mention_sum": 11, "aesthetic_raw": 47, "lat": 37.542502871830536, "lng": 127.05538453377896, "동네": "성수동", "장소목록": "베통 성수, 마를리, 성수동 카페거리, 우스블랑", "종류목록": "카페, 카페, 거리, 카페", "score_norm": 56.0, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.303, "local_moran_I": 0.0032810472633656848}, "geometry": {"type": "Polygon", "coordinates": [[[127.05734282111261, 37.542321025071956], [127.05659546261705, 37.54384189261316], [127.05486484879252, 37.54405844281581], [127.05388167406049, 37.54275416450042], [127.05462904528054, 37.54123335017128], [127.05635957851044, 37.54101676094635], [127.05734282111261, 37.542321025071956]]]}}, {"id": "3", "type": "Feature", "properties": {"hex": "8930e1c1237ffff", "place_count": 1, "mention_sum": 6, "aesthetic_raw": 9, "lat": 37.544230548347, "lng": 127.059084611827, "동네": "성수동", "장소목록": "용용선생 마라도원", "종류목록": "식당", "score_norm": 5.33, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.136, "local_moran_I": -0.3808822252983402}, "geometry": {"type": "Polygon", "coordinates": [[[127.06005682171224, 37.543408696211415], [127.05930947594916, 37.54492961696554], [127.05757875609864, 37.54514619565588], [127.05659546261705, 37.54384189261316], [127.05734282111261, 37.542321025071956], [127.05907346035944, 37.54210440736146], [127.06005682171224, 37.543408696211415]]]}}, {"id": "4", "type": "Feature", "properties": {"hex": "8930e1c1283ffff", "place_count": 1, "mention_sum": 2, "aesthetic_raw": 7, "lat": 37.5465359959002, "lng": 127.045286584884, "동네": "성수동", "장소목록": "미테이블", "종류목록": "식당", "score_norm": 2.67, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.222, "local_moran_I": 0.25407310452534104}, "geometry": {"type": "Polygon", "coordinates": [[[127.04719535720254, 37.54644499586893], [127.04644785866627, 37.54796565023601], [127.0447174271876, 37.54818196945863], [127.04373457482815, 37.54687767335009], [127.04482086606212, 37.54535707218805], [127.04621243696009, 37.5451407139304], [127.04719535720254, 37.54644499586893]]]}}, {"id": "5", "type": "Feature", "properties": {"hex": "8930e1c1287ffff", "place_count": 1, "mention_sum": 5, "aesthetic_raw": 9, "lat": 37.54868976255, "lng": 127.048854789779, "동네": "성수동", "장소목록": "브리비트", "종류목록": "식당", "score_norm": 5.33, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.11, "local_moran_I": 0.28019641067109724}, "geometry": {"type": "Polygon", "coordinates": [[[127.04990885310721, 37.5475329158261], [127.04916136727657, 37.549053623399175], [127.04743082976013, 37.54926997108723], [127.04644785866627, 37.54796565023601], [127.04719535720254, 37.54644499586893], [127.04892581412926, 37.546228609147924], [127.04990885310721, 37.5475329158261]]]}}, {"id": "6", "type": "Feature", "properties": {"hex": "8930e1c1297ffff", "place_count": 1, "mention_sum": 3, "aesthetic_raw": 8, "lat": 37.5493469543015, "lng": 127.045695676352, "동네": "성수동", "장소목록": "진작다이닝", "종류목록": "식당", "score_norm": 4.0, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.141, "local_moran_I": 0.30139514388060157}, "geometry": {"type": "Polygon", "coordinates": [[[127.04743082976013, 37.54926997108723], [127.04668330148897, 37.55079062532937], [127.0449527894223, 37.55100690551547], [127.04396988621707, 37.549702570496784], [127.0447174271876, 37.54818196945863], [127.04644785866627, 37.54796565023601], [127.04743082976013, 37.54926997108723]]]}}, {"id": "7", "type": "Feature", "properties": {"hex": "8930e1c129bffff", "place_count": 1, "mention_sum": 4, "aesthetic_raw": 13, "lat": 37.5460826295749, "lng": 127.043321867062, "동네": "성수동", "장소목록": "5TO7", "종류목록": "카페", "score_norm": 10.67, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.228, "local_moran_I": 0.09126712582709345}, "geometry": {"type": "Polygon", "coordinates": [[[127.04448208606212, 37.54535707218805], [127.04373457482815, 37.54687767335009], [127.0420042493835, 37.547093964114374], [127.04102151574654, 37.54578969275473], [127.04176903967016, 37.54426914479692], [127.04349928454326, 37.544052814995425], [127.04448208606212, 37.54535707218805]]]}}, {"id": "8", "type": "Feature", "properties": {"hex": "8930e1c12a3ffff", "place_count": 1, "mention_sum": 2, "aesthetic_raw": 7, "lat": 37.5483236456871, "lng": 127.053720541592, "동네": "성수동", "장소목록": "전자방", "종류목록": "식당", "score_norm": 2.67, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.231, "local_moran_I": -0.17096415280807944}, "geometry": {"type": "Polygon", "coordinates": [[[127.05510067345546, 37.54688357426838], [127.05435324278761, 37.54840438837718], [127.05262257379181, 37.548620832046225], [127.05163941606652, 37.54731650063465], [127.05238685945437, 37.54599573973475], [127.0541174478497, 37.54557925703843], [127.05510067345546, 37.54688357426838]]]}}, {"id": "9", "type": "Feature", "properties": {"hex": "8930e1c12abffff", "place_count": 3, "mention_sum": 7, "aesthetic_raw": 31, "lat": 37.54343088640366, "lng": 127.05379586226756, "동네": "성수동", "장소목록": "도토리오븐, 마루마끼, 아임도넛", "종류목록": "카페, 식당, 카페", "score_norm": 34.67, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.15, "local_moran_I": 0.7843626969769334}, "geometry": {"type": "Polygon", "coordinates": [[[127.05486484879252, 37.54405844281581], [127.0541174478497, 37.54557925703843], [127.05238685945437, 37.54579573973475], [127.05140375259705, 37.54449144723521], [127.0521511662581, 37.5429706862226], [127.05388167406049, 37.54275416450042], [127.05486484879252, 37.54405844281581]]]}}, {"id": "10", "type": "Feature", "properties": {"hex": "8930e1c12b7ffff", "place_count": 1, "mention_sum": 6, "aesthetic_raw": 9, "lat": 37.5487423625604, "lng": 127.054261762225, "동네": "성수동", "장소목록": "오밀", "종류목록": "식당", "score_norm": 5.33, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.059, "local_moran_I": 0.2966830895730165}, "geometry": {"type": "Polygon", "coordinates": [[[127.05533651927216, 37.5497087445159], [127.05458905887699, 37.551229558503586], [127.0528583092733, 37.55144596314396], [127.05187510067493, 37.55014159282621], [127.05262257379181, 37.548620832046225], [127.05435324278761, 37.54840438837718], [127.05533651927216, 37.5497087445159]]]}}, {"id": "11", "type": "Feature", "properties": {"hex": "8930e1c1667ffff", "place_count": 1, "mention_sum": 2, "aesthetic_raw": 12, "lat": 37.5474747499971, "lng": 127.04056832675, "동네": "성수동", "장소목록": "스페셜땡스투", "종류목록": "카페", "score_norm": 9.33, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.334, "local_moran_I": 0.05607858364320534}, "geometry": {"type": "Polygon", "coordinates": [[[127.0420042493835, 37.547093964114374], [127.04125669572154, 37.54861451194948], [127.03952639573706, 37.548830735221905], [127.03854372998664, 37.54752644970083], [127.03929129633195, 37.546005955067876], [127.04102151574654, 37.54578969275473], [127.0420042493835, 37.547093964114374]]]}}, {"id": "12", "type": "Feature", "properties": {"hex": "8930e16bfffffff", "place_count": 1, "mention_sum": 16, "aesthetic_raw": 8, "lat": 37.5443222301513, "lng": 127.037617759165, "동네": "성수동", "장소목록": "서울숲", "종류목록": "랜드마크", "score_norm": 4.0, "lisa_quad": 3, "lisa_label": "LL (감성 미도달)", "lisa_pvalue": 0.001, "local_moran_I": -0.0}, "geometry": {"type": "Polygon", "coordinates": [[[127.03905621801088, 37.543181213708884], [127.03830868140567, 37.5447017084634], [127.03657856801729, 37.54491794233257], [127.03559607178973, 37.5436137204895], [127.03634362106854, 37.542093278937365], [127.03807365390357, 37.54187700602681], [127.03905621801088, 37.543181213708884]]]}}, {"id": "13", "type": "Feature", "properties": {"hex": "8930e1d844fffff", "place_count": 2, "mention_sum": 5, "aesthetic_raw": 19, "lat": 37.55703184319731, "lng": 126.92351017438644, "동네": "홍대", "장소목록": "하이디라오 홍대점, 구우움베이커리", "종류목록": "식당, 카페", "score_norm": 18.67, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.304, "local_moran_I": 0.028969344536684268}, "geometry": {"type": "Polygon", "coordinates": [[[126.92496402677496, 37.5573865046177], [126.92421528361244, 37.55890465605925], [126.92248806626111, 37.559118784141965], [126.92150967239128, 37.55781479994952], [126.922584279136, 37.55629670164575], [126.92398556494817, 37.556082534397504], [126.92496402677496, 37.5573865046177]]]}}, {"id": "14", "type": "Feature", "properties": {"hex": "8930e1d845bffff", "place_count": 1, "mention_sum": 3, "aesthetic_raw": 7, "lat": 37.5589137902772, "lng": 126.917787071063, "동네": "홍대", "장소목록": "연남동", "종류목록": "거리", "score_norm": 2.67, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.423, "local_moran_I": 0.16917191237299029}, "geometry": {"type": "Polygon", "coordinates": [[[126.9197825610901, 37.55802889986282], [126.91903376334594, 37.55954694480044], [126.91730667778498, 37.55976097738042], [126.91632847027634, 37.55845700419479], [126.91707728036609, 37.55693901239202], [126.91880428562108, 37.55672494064095], [126.9197825610901, 37.55802889986282]]]}}, {"id": "15", "type": "Feature", "properties": {"hex": "8930e1d8473ffff", "place_count": 1, "mention_sum": 2, "aesthetic_raw": 7, "lat": 37.561038650759, "lng": 126.92502044803, "동네": "홍대", "장소목록": "우삼집", "종류목록": "식당", "score_norm": 2.67, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.234, "local_moran_I": -0.08585044202706195}, "geometry": {"type": "Polygon", "coordinates": [[[126.92789975000775, 37.5612985430718], [126.92715098934806, 37.56281674741946], [126.92542358560944, 37.563030864513685], [126.92444502286594, 37.56172681642609], [126.92519379589505, 37.56020866521603], [126.92692111930045, 37.5599945089569], [126.92789975000775, 37.5612985430718]]]}}, {"id": "16", "type": "Feature", "properties": {"hex": "8930e1d847bffff", "place_count": 2, "mention_sum": 14, "aesthetic_raw": 18, "lat": 37.55813137385522, "lng": 126.92539910967956, "동네": "홍대", "장소목록": "경의선숲길, 오밀", "종류목록": "거리, 식당", "score_norm": 17.33, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.345, "local_moran_I": 0.0002375390589224397}, "geometry": {"type": "Polygon", "coordinates": [[[126.92766985009521, 37.558476304376576], [126.92692111930045, 37.5599945089569], [126.92519379589505, 37.56020866521603], [126.92421528361244, 37.55890465605925], [126.92496402677496, 37.5573865046177], [126.92669126985453, 37.55717230919507], [126.92766985009521, 37.558476304376576]]]}}, {"id": "17", "type": "Feature", "properties": {"hex": "8930e1d860fffff", "place_count": 1, "mention_sum": 5, "aesthetic_raw": 14, "lat": 37.5450615631976, "lng": 126.925504925373, "동네": "홍대", "장소목록": "만월다방", "종류목록": "카페", "score_norm": 12.0, "lisa_quad": 3, "lisa_label": "LL (감성 미도달)", "lisa_pvalue": 0.001, "local_moran_I": -0.0}, "geometry": {"type": "Polygon", "coordinates": [[[126.92652065953766, 37.54436569178131], [126.92577207803267, 37.54588389741616], [126.92404515618232, 37.54609824947806], [126.92306689612805, 37.5447944350622], [126.92381548999232, 37.54327628257173], [126.92554233155384, 37.543061891353645], [126.92652065953766, 37.54436569178131]]]}}, {"id": "18", "type": "Feature", "properties": {"hex": "8930e1d8613ffff", "place_count": 2, "mention_sum": 5, "aesthetic_raw": 20, "lat": 37.54848159619797, "lng": 126.9197669925078, "동네": "홍대", "장소목록": "달콤한거짓말, 단막", "종류목록": "카페, 식당", "score_norm": 20.0, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.453, "local_moran_I": -0.056744123325754556}, "geometry": {"type": "Polygon", "coordinates": [[[126.92156963633425, 37.54783068650935], [126.92082097040294, 37.54934878546078], [126.91909410000244, 37.54956300287258], [126.91811597582094, 37.54825916049708], [126.91886465409904, 37.54674111468596], [126.92059144421404, 37.5465268581109], [126.92156963633425, 37.54783068650935]]]}}, {"id": "19", "type": "Feature", "properties": {"hex": "8930e1d8617ffff", "place_count": 1, "mention_sum": 6, "aesthetic_raw": 9, "lat": 37.54954136414458, "lng": 126.92139033603668, "동네": "홍대", "장소목록": "PZPZ(피지피지)", "종류목록": "식당", "score_norm": 5.33, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.378, "local_moran_I": 0.03227642718359026}, "geometry": {"type": "Polygon", "coordinates": [[[126.92427484295287, 37.54892025514884], [126.92352618937622, 37.55043840724145], [126.9217992129529, 37.55065265281642], [126.92082097040294, 37.54934878546078], [126.92156963633425, 37.54783068650935], [126.92329653246307, 37.547616401773226], [126.92427484295287, 37.54892025514884]]]}}, {"id": "20", "type": "Feature", "properties": {"hex": "8930e1d868bffff", "place_count": 2, "mention_sum": 11, "aesthetic_raw": 17, "lat": 37.54914931124334, "lng": 126.91790699689685, "동네": "홍대", "장소목록": "육지, 피자네버슬립스", "종류목록": "식당, 식당", "score_norm": 16.0, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.228, "local_moran_I": 0.019473995159324024}, "geometry": {"type": "Polygon", "coordinates": [[[126.91909410000244, 37.54956300287258], [126.91834539186135, 37.55108104847622], [126.91661854719604, 37.55129519856524], [126.9156404909578, 37.54999134221832], [126.9163892114394, 37.54847334975291], [126.91811597582094, 37.54825916049708], [126.91909410000244, 37.54956300287258]]]}}, {"id": "21", "type": "Feature", "properties": {"hex": "8930e1d8a3ffff", "place_count": 1, "mention_sum": 2, "aesthetic_raw": 7, "lat": 37.5530062535772, "lng": 126.92500925708, "동네": "홍대", "장소목록": "면식당", "종류목록": "식당", "score_norm": 2.67, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.389, "local_moran_I": 0.02731572773796117}, "geometry": {"type": "Polygon", "coordinates": [[[126.92721011207944, 37.55283194312323], [126.92646144100756, 37.55435014814705], [126.92473427824639, 37.5545643827317], [126.92375586687037, 37.55326045145391], [126.92450455030664, 37.551742299571075], [126.92623163275677, 37.55152802582589], [126.92721011207944, 37.55283194312323]]]}}, {"id": "22", "type": "Feature", "properties": {"hex": "8930e1d86b3ffff", "place_count": 2, "mention_sum": 10, "aesthetic_raw": 14, "lat": 37.5544444178285, "lng": 126.92248521601832, "동네": "홍대", "장소목록": "스시오, 홍익대학교", "종류목록": "식당, 랜드마크", "score_norm": 12.0, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.47, "local_moran_I": 0.013815883498738215}, "geometry": {"type": "Polygon", "coordinates": [[[126.92473427824639, 37.5545643827317], [126.92398556494817, 37.556082534397504], [126.922284279136, 37.55629670164575], [126.92128008448879, 37.55499275639312], [126.92202881014511, 37.5534746578662], [126.92375586687037, 37.55326045145391], [126.92473427824639, 37.5545643827317]]]}}, {"id": "23", "type": "Feature", "properties": {"hex": "8930e1d86b7ffff", "place_count": 2, "mention_sum": 8, "aesthetic_raw": 22, "lat": 37.55592472137173, "lng": 126.92523324401516, "동네": "홍대", "장소목록": "훌리건커피, 중경식객", "종류목록": "카페, 식당", "score_norm": 22.67, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.456, "local_moran_I": -0.04214269088025247}, "geometry": {"type": "Polygon", "coordinates": [[[126.92743997078671, 37.55565410438936], [126.92669126985453, 37.55717230919507], [126.92496402677496, 37.5573865046177], [126.92398556494817, 37.556082534397504], [126.92473427824639, 37.5545643827317], [126.92646144100756, 37.55435014814705], [126.92743997078671, 37.55565410438936]]]}}, {"id": "24", "type": "Feature", "properties": {"hex": "8930e1d86bbffff", "place_count": 1, "mention_sum": 3, "aesthetic_raw": 10, "lat": 37.5512059328602, "lng": 126.922031375914, "동네": "홍대", "장소목록": "너가술집사장", "종류목록": "바", "score_norm": 6.67, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.199, "local_moran_I": 0.16914773858123347}, "geometry": {"type": "Polygon", "coordinates": [[[126.92450455030664, 37.551742299571075], [126.92375586687037, 37.55326045145391], [126.92202881014511, 37.5534746578662], [126.92105051716025, 37.55217075155918], [126.9217992129529, 37.55065265281642], [126.92352618937622, 37.55043840724145], [126.92450455030664, 37.551742299571075]]]}}, {"id": "25", "type": "Feature", "properties": {"hex": "8930e1d8883ffff", "place_count": 4, "mention_sum": 18, "aesthetic_raw": 42, "lat": 37.563769196569375, "lng": 126.99151756270136, "동네": "을지로", "장소목록": "페이퍼크레인, 떼르세로 코스테스, 콘티뉴이티, 도야집", "종류목록": "카페, 식당, 카페, 식당", "score_norm": 49.33, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.087, "local_moran_I": 1.8510850923408002}, "geometry": {"type": "Polygon", "coordinates": [[[126.9935237718596, 37.563128090645804], [126.99277559134678, 37.564647625815745], [126.99104625952828, 37.56486280165068], [126.99006518871856, 37.563558481416116], [126.99081338178506, 37.56203899941657], [126.99254263310978, 37.56182378448211], [126.9935237718596, 37.563128090645804]]]}}, {"id": "26", "type": "Feature", "properties": {"hex": "8930e1d8893ffff", "place_count": 3, "mention_sum": 18, "aesthetic_raw": 26, "lat": 37.565532473956, "lng": 126.9899465892983, "동네": "을지로", "장소목록": "달맞이광장바베큐, 을지로보석, 백염막창", "종류목록": "식당, 식당, 식당", "score_norm": 28.0, "lisa_quad": 1, "lisa_label": "HH (감성 핵심)", "lisa_pvalue": 0.036, "local_moran_I": 0.9660973081061061}, "geometry": {"type": "Polygon", "coordinates": [[[126.99104625952828, 37.56486280165068], [126.99029803665645, 37.56638228344843], [126.98856873042533, 37.56659739184233], [126.98758772756032, 37.565293057542505], [126.98833596297953, 37.56377362891316], [126.99006518871856, 37.563558481416116], [126.99104625952828, 37.56486280165068]]]}}, {"id": "27", "type": "Feature", "properties": {"hex": "8930e1d8897ffff", "place_count": 6, "mention_sum": 33, "aesthetic_raw": 55, "lat": 37.56565169307759, "lng": 126.99174419545515, "동네": "을지로", "장소목록": "올디스타코, 산청숯불가든, 골수, 르템플, 장만옥, 대동옥", "종류목록": "식당, 식당, 식당, 바, 식당, 식당", "score_norm": 66.67, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.093, "local_moran_I": 2.0370377440161396}, "geometry": {"type": "Polygon", "coordinates": [[[126.99375678079257, 37.56595197087875], [126.99300857047619, 37.567471505845816], [126.9912791581564, 37.56768664257971], [126.99029803665645, 37.56638228344843], [126.99104625952828, 37.56486280165068], [126.99277559134678, 37.564647625815745], [126.99375678079257, 37.56595197087875]]]}}, {"id": "28", "type": "Feature", "properties": {"hex": "8930e1d889bffff", "place_count": 1, "mention_sum": 2, "aesthetic_raw": 12, "lat": 37.5623279452247, "lng": 126.990110002521, "동네": "을지로", "장소목록": "루이 티하우스", "종류목록": "카페", "score_norm": 9.33, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.079, "local_moran_I": -0.3396773835805859}, "geometry": {"type": "Polygon", "coordinates": [[[126.99081338178506, 37.56203899941657], [126.99006518871856, 37.563558481416116], [126.98833596297953, 37.56377362891316], [126.98735501079398, 37.56246933351331], [126.98810321640616, 37.56094990468332], [126.98983236166045, 37.56073471808457], [126.99081338178506, 37.56203899941657]]]}}, {"id": "29", "type": "Feature", "properties": {"hex": "8930e1d88b3ffff", "place_count": 1, "mention_sum": 2, "aesthetic_raw": 12, "lat": 37.56613954356158, "lng": 126.99732759512656, "동네": "을지로", "장소목록": "카페시나브로", "종류목록": "카페", "score_norm": 9.33, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.376, "local_moran_I": 0.10322436505743443}, "geometry": {"type": "Polygon", "coordinates": [[[126.99894522615898, 37.56530626253849], [126.99819707077758, 37.56682590405204], [126.99646752678827, 37.56704113658408], [126.99548621869454, 37.565736766698855], [126.99623438664564, 37.564217178357545], [126.99796385012299, 37.56400190673009], [126.99894522615898, 37.56530626253849]]]}}, {"id": "30", "type": "Feature", "properties": {"hex": "8930e1d8a0bffff", "place_count": 8, "mention_sum": 36, "aesthetic_raw": 80, "lat": 37.534192634752245, "lng": 126.9946699136548, "동네": "이태원", "장소목록": "와이키키 유토피아, 김실력포차, 이코복스커피 스튜디오, 이코복스, 별밤포차, 보광리광장, 꾸띠자르당, 이진칸", "종류목록": "바, 식당, 카페, 카페, 바, 식당, 식당, 식당", "score_norm": 100.0, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.189, "local_moran_I": 1.0671809802770764}, "geometry": {"type": "Polygon", "coordinates": [[[126.99638062115103, 37.534244420916366], [126.99563279341862, 37.535764064207626], [126.99390413465291, 37.53597972670938], [126.9929233840522, 37.534675785000196], [126.99367122433536, 37.53315619489358], [126.99539980267069, 37.532940493312346], [126.99638062115103, 37.534244420916366]]]}}, {"id": "31", "type": "Feature", "properties": {"hex": "8930e1d8a1bffff", "place_count": 2, "mention_sum": 5, "aesthetic_raw": 15, "lat": 37.53494045346592, "lng": 126.99234591838864, "동네": "이태원", "장소목록": "야상해, 아지양", "종류목록": "식당, 식당", "score_norm": 13.33, "lisa_quad": 2, "lisa_label": "LH (감성 전파 중)", "lisa_pvalue": 0.006, "local_moran_I": -0.1672018881795999}, "geometry": {"type": "Polygon", "coordinates": [[[126.99390413465291, 37.53597972670938], [126.99315626459335, 37.537499316691786], [126.99142763138637, 37.537714911781514], [126.99044694866987, 37.53641095597269], [126.99119483127392, 37.534891419172915], [126.9929233840522, 37.534675785000196], [126.99390413465291, 37.53597972670938]]]}}, {"id": "32", "type": "Feature", "properties": {"hex": "8930e1d8a43ffff", "place_count": 1, "mention_sum": 2, "aesthetic_raw": 12, "lat": 37.53175450954812, "lng": 126.99226704850244, "동네": "이태원", "장소목록": "나무아래류", "종류목록": "카페", "score_norm": 9.33, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.401, "local_moran_I": 0.02787593479121522}, "geometry": {"type": "Polygon", "coordinates": [[[126.99343833489417, 37.530332701920685], [126.99269052438517, 37.531852292144265], [126.99096205202815, 37.53206796539856], [126.98998147059618, 37.530764087510214], [126.99072929364621, 37.529244550471496], [126.99245768558939, 37.52902883813712], [126.99343833489417, 37.530332701920685]]]}}, {"id": "33", "type": "Feature", "properties": {"hex": "8930e1d8a53ffff", "place_count": 1, "mention_sum": 3, "aesthetic_raw": 5, "lat": 37.53209497260624, "lng": 126.9906695038964, "동네": "이태원", "장소목록": "용산구청 주차장", "종류목록": "랜드마크", "score_norm": 0.0, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.271, "local_moran_I": -0.10500501781869352}, "geometry": {"type": "Polygon", "coordinates": [[[126.99096205202815, 37.53206796539856], [126.99021419920226, 37.533587502321446], [126.98848575240744, 37.53380310817226], [126.9875052388529, 37.532499216184725], [126.98825310421357, 37.53097973244467], [126.98998147059618, 37.530764087510214], [126.99096205202815, 37.53206796539856]]]}}, {"id": "34", "type": "Feature", "properties": {"hex": "8930e1d8a57ffff", "place_count": 3, "mention_sum": 9, "aesthetic_raw": 24, "lat": 37.5334627738645, "lng": 126.99177358358132, "동네": "이태원", "장소목록": "트로이카, 와이키키비치포차, 메르씨 삐삐", "종류목록": "식당, 식당, 식당", "score_norm": 25.33, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.089, "local_moran_I": 0.4565553425470326}, "geometry": {"type": "Polygon", "coordinates": [[[126.99367122433536, 37.53315619489358], [126.9929233840522, 37.534675785000196], [126.99119483127392, 37.534891419172915], [126.99021419920226, 37.533587502321446], [126.99096205202815, 37.53206796539856], [126.99269052438517, 37.531852292144265], [126.99367122433536, 37.53315619489358]]]}}, {"id": "35", "type": "Feature", "properties": {"hex": "8930e1d8a8bffff", "place_count": 1, "mention_sum": 2, "aesthetic_raw": 7, "lat": 37.54092022170618, "lng": 126.99004267702776, "동네": "이태원", "장소목록": "쿠시노리", "종류목록": "식당", "score_norm": 2.67, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.088, "local_moran_I": 0.33908055599202513}, "geometry": {"type": "Polygon", "coordinates": [[[126.99166045236825, 37.54053844321128], [126.9909125102009, 37.542057979743156], [126.98918382212503, 37.542273468334294], [126.98820315665314, 37.54096945948251], [126.98895111136036, 37.539449976130136], [126.99067971900182, 37.53923444845093], [126.99166045236825, 37.54053844321128]]]}}, {"id": "36", "type": "Feature", "properties": {"hex": "8930e1d8a8fffff", "place_count": 1, "mention_sum": 2, "aesthetic_raw": 9, "lat": 37.5409312792296, "lng": 126.993584314814, "동네": "이태원", "장소목록": "그래픽 이태원", "종류목록": "카페", "score_norm": 5.33, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.071, "local_moran_I": 0.2966830895730165}, "geometry": {"type": "Polygon", "coordinates": [[[126.99437001792839, 37.54162690681765], [126.993622088309, 37.54314649652986], [126.9918932942224, 37.5433620134492], [126.9909125102009, 37.542057979743156], [126.99166045236825, 37.54053844321128], [126.99338916601133, 37.540322887206024], [126.99437001792839, 37.54162690681765]]]}}, {"id": "37", "type": "Feature", "properties": {"hex": "8930e1d8ad7ffff", "place_count": 1, "mention_sum": 4, "aesthetic_raw": 7, "lat": 37.5390142761733, "lng": 126.986688076957, "동네": "이태원", "장소목록": "해방촌", "종류목록": "거리", "score_norm": 2.67, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.211, "local_moran_I": 0.3814780224110338}, "geometry": {"type": "Polygon", "coordinates": [[[126.98895111136036, 37.539449976130136], [126.98820315665314, 37.54096945948251], [126.9864745745841, 37.54118491975262], [126.98549402764986, 37.53988093576129], [126.98624199488901, 37.53836150558748], [126.98797049653271, 37.538146006227265], [126.98895111136036, 37.539449976130136]]]}}, {"id": "38", "type": "Feature", "properties": {"hex": "8930e1d8c03ffff", "place_count": 1, "mention_sum": 8, "aesthetic_raw": 6, "lat": 37.5691469686793, "lng": 126.978647068151, "동네": "을지로", "장소목록": "청계천", "종류목록": "랜드마크", "score_norm": 1.33, "lisa_quad": 3, "lisa_label": "LL (감성 미도달)", "lisa_pvalue": 0.001, "local_moran_I": -0.0}, "geometry": {"type": "Polygon", "coordinates": [[[126.98090360603848, 37.56897679255562], [126.9801552435745, 37.57049606104994], [126.97842612024688, 37.570710938812034], [126.97744543986353, 37.569406587196575], [126.97819381484805, 37.567887371863684], [126.97992285769762, 37.567672454985704], [126.98090360603848, 37.56897679255562]]]}}, {"id": "39", "type": "Feature", "properties": {"hex": "8930e1d8c3bffff", "place_count": 1, "mention_sum": 2, "aesthetic_raw": 12, "lat": 37.569636163472815, "lng": 126.98406216881072, "동네": "을지로", "장소목록": "서울커피상회", "종류목록": "카페", "score_norm": 9.33, "lisa_quad": 3, "lisa_label": "LL (감성 미도달)", "lisa_pvalue": 0.001, "local_moran_I": -0.0}, "geometry": {"type": "Polygon", "coordinates": [[[126.98609118455981, 37.568331861218184], [126.98534287697673, 37.56985123625928], [126.9836136219409, 37.570066209775625], [126.98263275497922, 37.56876184736201], [126.98338107509717, 37.56724252548529], [126.98511024964417, 37.56702751285869], [126.98609118455981, 37.568331861218184]]]}}, {"id": "40", "type": "Feature", "properties": {"hex": "8930e1d8d43ffff", "place_count": 1, "mention_sum": 6, "aesthetic_raw": 6, "lat": 37.5691379916808, "lng": 126.995236793525, "동네": "uljiro", "장소목록": "세운상가", "종류목록": "랜드마크", "score_norm": 1.33, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.376, "local_moran_I": 0.2588324694947544}, "geometry": {"type": "Polygon", "coordinates": [[[126.9967006878409, 37.56986513349683], [126.99595246028377, 37.57138472142285], [126.99422286135369, 37.571599847403434], [126.99324157050073, 37.570295424559276], [126.99398981062302, 37.568775889802325], [126.99571932903531, 37.56856072472136], [126.9967006878409, 37.56986513349683]]]}}, {"id": "41", "type": "Feature", "properties": {"hex": "8930e1d8d4bffff", "place_count": 1, "mention_sum": 6, "aesthetic_raw": 13, "lat": 37.567543190147, "lng": 126.994348340573, "동네": "을지로", "장소목록": "끄네들로", "종류목록": "카페", "score_norm": 10.67, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.237, "local_moran_I": -0.06018626181572228}, "geometry": {"type": "Polygon", "coordinates": [[[126.99646752678827, 37.56704113658408], [126.99571932903531, 37.56856072472136], [126.99398981062302, 37.568775889802325], [126.99300857047619, 37.567471505845816], [126.99375678079257, 37.56595197087875], [126.99548621869454, 37.565736766698855], [126.99646752678827, 37.56704113658408]]]}}, {"id": "42", "type": "Feature", "properties": {"hex": "8930e1d8d4fffff", "place_count": 1, "mention_sum": 3, "aesthetic_raw": 8, "lat": 37.56821185731751, "lng": 126.99871865898974, "동네": "을지로", "장소목록": "우래옥", "종류목록": "식당", "score_norm": 4.0, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.263, "local_moran_I": 0.21327361631178404}, "geometry": {"type": "Polygon", "coordinates": [[[126.99917849753116, 37.5681302987532], [126.99843031234967, 37.56964994006162], [126.9967006878409, 37.56986513349683], [126.99571932903531, 37.56856072472136], [126.99646752678827, 37.56704113658408], [126.99819707077758, 37.56682590405204], [126.99917849753116, 37.5681302987532]]]}}, {"id": "43", "type": "Feature", "properties": {"hex": "8930e1d8e2bffff", "place_count": 1, "mention_sum": 2, "aesthetic_raw": 11, "lat": 37.5459950503151, "lng": 126.985249715576, "동네": "이태원", "장소목록": "흑해", "종류목록": "카페", "score_norm": 8.0, "lisa_quad": 3, "lisa_label": "LL (감성 미도달)", "lisa_pvalue": 0.001, "local_moran_I": -0.0}, "geometry": {"type": "Polygon", "coordinates": [[[126.98693979652701, 37.546831864481135], [126.98619173991533, 37.5483512942054], [126.98446302255586, 37.54856660887625], [126.9834824422489, 37.547262532920264], [126.98423051138968, 37.54574315637027], [126.9859591483106, 37.545527802602884], [126.98693979652701, 37.546831864481135]]]}}, {"id": "44", "type": "Feature", "properties": {"hex": "8930e1db12fffff", "place_count": 1, "mention_sum": 2, "aesthetic_raw": 12, "lat": 37.5560870399809, "lng": 126.916048424246, "동네": "홍대", "장소목록": "내면의발견", "종류목록": "카페", "score_norm": 9.33, "lisa_quad": 0, "lisa_label": "Non-significant", "lisa_pvalue": 0.236, "local_moran_I": 0.16917191237299029}, "geometry": {"type": "Polygon", "coordinates": [[[126.91707728036609, 37.55693901239202], [126.91632847027634, 37.55845700419479], [126.91460149076673, 37.55867100861751], [126.91362340164588, 37.55736706041161], [126.9143722240732, 37.55584912174279], [126.916099123286, 37.55563507814686], [126.91707728036609, 37.55693901239202]]]}}]};
+const PLACES  = [{"동네": "을지로", "장소명": "올디스타코", "종류": "식당", "언급횟수": 11, "검색쿼리": "을지로 올디스타코", "위도": 37.56506447406918, "경도": 126.99293481089084, "주소": "서울 중구 초동 17-4", "카테고리": "음식점"}, {"동네": "을지로", "장소명": "산청숯불가든", "종류": "식당", "언급횟수": 10, "검색쿼리": "을지로 산청숯불가든", "위도": 37.5658202486879, "경도": 126.990621155339, "주소": "서울 중구 을지로3가 343-1", "카테고리": "음식점"}, {"동네": "을지로", "장소명": "달맞이광장바베큐", "종류": "식당", "언급횟수": 9, "검색쿼리": "을지로 달맞이광장바베큐", "위도": 37.565847266782, "경도": 126.990474006135, "주소": "서울 중구 을지로3가 343-11", "카테고리": "음식점"}, {"동네": "을지로", "장소명": "청계천", "종류": "랜드마크", "언급횟수": 8, "검색쿼리": "을지로 청계천", "위도": 37.5691469686793, "경도": 126.978647068151, "주소": "서울 종로구 서린동 148", "카테고리": NaN}, {"동네": "을지로", "장소명": "페이퍼크레인", "종류": "카페", "언급횟수": 7, "검색쿼리": "을지로 페이퍼크레인", "위도": 37.56386699861269, "경도": 126.99212224782264, "주소": "서울 중구 초동 61-1", "카테고리": "음식점"}, {"동네": "을지로", "장소명": "끄네들로", "종류": "카페", "언급횟수": 6, "검색쿼리": "을지로 끄네들로", "위도": 37.567543190147, "경도": 126.994348340573, "주소": "서울 중구 입정동 281", "카테고리": "음식점"}, {"동네": "을지로", "장소명": "을지로보석", "종류": "식당", "언급횟수": 6, "검색쿼리": "을지로 을지로보석", "위도": 37.5651407804757, "경도": 126.98924713794588, "주소": "서울 중구 저동2가 84-11", "카테고리": "음식점"}, {"동네": "을지로", "장소명": "세운상가", "종류": "랜드마크", "언급횟수": 6, "검색쿼리": "을지로 세운상가", "위도": 37.5691379916808, "경도": 126.995236793525, "주소": "서울 종로구 장사동 116-4", "카테고리": NaN}, {"동네": "을지로", "장소명": "떼르세로 코스테스", "종류": "식당", "언급횟수": 5, "검색쿼리": "을지로 떼르세로 코스테스", "위도": 37.56331914987354, "경도": 126.99150318210812, "주소": "서울 중구 초동 158-15", "카테고리": "음식점"}, {"동네": "을지로", "장소명": "콘티뉴이티", "종류": "카페", "언급횟수": 4, "검색쿼리": "을지로 콘티뉴이티", "위도": 37.5638326325067, "경도": 126.990390504995, "주소": "서울 중구 저동2가 47-15", "카테고리": "카페"}, {"동네": "을지로", "장소명": "골수", "종류": "식당", "언급횟수": 4, "검색쿼리": "을지로 골수", "위도": 37.5654176256601, "경도": 126.992312241116, "주소": "서울 중구 을지로3가 296-16", "카테고리": "음식점"}, {"동네": "을지로", "장소명": "백염막창", "종류": "식당", "언급횟수": 3, "검색쿼리": "을지로 백염막창", "위도": 37.5656093746103, "경도": 126.990118623814, "주소": "서울 중구 을지로3가 344-15", "카테고리": "음식점"}, {"동네": "을지로", "장소명": "르템플", "종류": "바", "언급횟수": 3, "검색쿼리": "을지로 르템플", "위도": 37.565897863309246, "경도": 126.99241632579673, "주소": "서울 중구 을지로3가 295-3", "카테고리": "음식점"}, {"동네": "을지로", "장소명": "장만옥", "종류": "식당", "언급횟수": 3, "검색쿼리": "을지로 장만옥", "위도": 37.56574460233978, "경도": 126.99110334968653, "주소": "서울 중구 을지로3가 323", "카테고리": "음식점"}, {"동네": "을지로", "장소명": "우래옥", "종류": "식당", "언급횟수": 3, "검색쿼리": "을지로 우래옥", "위도": 37.56821185731751, "경도": 126.99871865898974, "주소": "서울 중구 주교동 118-1", "카테고리": "음식점"}, {"동네": "을지로", "장소명": "카페시나브로", "종류": "카페", "언급횟수": 2, "검색쿼리": "을지로 카페시나브로", "위도": 37.56613954356158, "경도": 126.99732759512656, "주소": "서울 중구 을지로4가 323", "카테고리": "카페"}, {"동네": "을지로", "장소명": "루이 티하우스", "종류": "카페", "언급횟수": 2, "검색쿼리": "을지로 루이 티하우스", "위도": 37.5623279452247, "경도": 126.990110002521, "주소": "서울 중구 충무로2가 50-1", "카테고리": "카페"}, {"동네": "을지로", "장소명": "서울커피상회", "종류": "카페", "언급횟수": 2, "검색쿼리": "을지로 서울커피상회", "위도": 37.569636163472815, "경도": 126.98406216881072, "주소": "서울 종로구 관철동 45-8", "카테고리": "카페"}, {"동네": "을지로", "장소명": "도야집", "종류": "식당", "언급횟수": 2, "검색쿼리": "을지로 도야집", "위도": 37.56405800528456, "경도": 126.99205431587964, "주소": "서울 중구 초동 64-1", "카테고리": "음식점"}, {"동네": "을지로", "장소명": "대동옥", "종류": "식당", "언급횟수": 2, "검색쿼리": "을지로 대동옥", "위도": 37.5659653443993, "경도": 126.991077289902, "주소": "서울 중구 을지로3가 334-8", "카테고리": "음식점"}, {"동네": "성수동", "장소명": "서울숲", "종류": "랜드마크", "언급횟수": 16, "검색쿼리": "성수동 서울숲", "위도": 37.5443222301513, "경도": 127.037617759165, "주소": "서울 성동구 성수동1가 678-1", "카테고리": NaN}, {"동네": "성수동", "장소명": "용용선생 마라도원", "종류": "식당", "언급횟수": 6, "검색쿼리": "성수동 용용선생 마라도원", "위도": 37.544230548347, "경도": 127.059084611827, "주소": "서울 성동구 성수동2가 277-56", "카테고리": "음식점"}, {"동네": "성수동", "장소명": "오밀", "종류": "식당", "언급횟수": 6, "검색쿼리": "성수동 오밀", "위도": 37.5487423625604, "경도": 127.054261762225, "주소": "서울 성동구 성수동2가 299-187", "카테고리": "음식점"}, {"동네": "성수동", "장소명": "브리비트", "종류": "식당", "언급횟수": 5, "검색쿼리": "성수동 브리비트", "위도": 37.54868976255, "경도": 127.048854789779, "주소": "서울 성동구 성수동1가 13-191", "카테고리": "음식점"}, {"동네": "성수동", "장소명": "5TO7", "종류": "카페", "언급횟수": 4, "검색쿼리": "성수동 5TO7", "위도": 37.5460826295749, "경도": 127.043321867062, "주소": "서울 성동구 성수동1가 668-136", "카테고리": "카페"}, {"동네": "성수동", "장소명": "베통 성수", "종류": "카페", "언급횟수": 3, "검색쿼리": "성수동 베통 성수", "위도": 37.54294488785, "경도": 127.055226162255, "주소": "서울 성동구 성수동2가 315-47", "카테고리": "카페"}, {"동네": "성수동", "장소명": "성수율 카페", "종류": "카페", "언급횟수": 3, "검색쿼리": "성수동 성수율 카페", "위도": 37.5402765104495, "경도": 127.059981037334, "주소": "서울 성동구 성수동2가 269-212", "카테고리": "카페"}, {"동네": "성수동", "장소명": "마를리", "종류": "카페", "언급횟수": 3, "검색쿼리": "성수동 마를리", "위도": 37.5427802289338, "경도": 127.054745135469, "주소": "서울 성동구 성수동2가 315-55", "카테고리": "카페"}, {"동네": "성수동", "장소명": "도토리오븐", "종류": "카페", "언급횟수": 3, "검색쿼리": "성수동 도토리오븐", "위도": 37.5435934086824, "경도": 127.053703568622, "주소": "서울 성동구 성수동2가 316-53", "카테고리": "카페"}, {"동네": "성수동", "장소명": "진작다이닝", "종류": "식당", "언급횟수": 3, "검색쿼리": "성수동 진작다이닝", "위도": 37.5493469543015, "경도": 127.045695676352, "주소": "서울 성동구 성수동1가 656-1250", "카테고리": "음식점"}, {"동네": "성수동", "장소명": "bd버거", "종류": "식당", "언급횟수": 3, "검색쿼리": "성수동 bd버거", "위도": 37.5410612323475, "경도": 127.056424179798, "주소": "서울 성동구 성수동2가 322-20", "카테고리": "음식점"}, {"동네": "성수동", "장소명": "성수동 카페거리", "종류": "거리", "언급횟수": 3, "검색쿼리": "성수동 성수동 카페거리", "위도": 37.54243256842165, "경도": 127.0563935302218, "주소": "서울 성동구 성수동2가 276-5", "카테고리": "관광명소"}, {"동네": "성수동", "장소명": "우스블랑", "종류": "카페", "언급횟수": 2, "검색쿼리": "성수동 우스블랑", "위도": 37.5418538021167, "경도": 127.05517330717, "주소": "서울 성동구 성수동2가 321-49", "카테고리": "음식점"}, {"동네": "성수동", "장소명": "스페셜땡스투", "종류": "카페", "언급횟수": 2, "검색쿼리": "성수동 스페셜땡스투", "위도": 37.5474747499971, "경도": 127.04056832675, "주소": "서울 성동구 성수동1가 685-431", "카테고리": "카페"}, {"동네": "성수동", "장소명": "마루마끼", "종류": "식당", "언급횟수": 2, "검색쿼리": "성수동 마루마끼", "위도": 37.543036570643, "경도": 127.053748431034, "주소": "서울 성동구 성수동2가 316-43", "카테고리": "음식점"}, {"동네": "성수동", "장소명": "미테이블", "종류": "식당", "언급횟수": 2, "검색쿼리": "성수동 미테이블", "위도": 37.5465359959002, "경도": 127.045286584884, "주소": "서울 성동구 성수동1가 656-385", "카테고리": "음식점"}, {"동네": "성수동", "장소명": "아임도넛", "종류": "카페", "언급횟수": 2, "검색쿼리": "성수동 아임도넛", "위도": 37.54366267988559, "경도": 127.0539355871467, "주소": "서울 성동구 성수동2가 316-50", "카테고리": "음식점"}, {"동네": "성수동", "장소명": "전자방", "종류": "식당", "언급횟수": 2, "검색쿼리": "성수동 전자방", "위도": 37.5483236456871, "경도": 127.053720541592, "주소": "서울 성동구 성수동2가 299-157", "카테고리": "음식점"}, {"동네": "홍대", "장소명": "경의선숲길", "종류": "거리", "언급횟수": 11, "검색쿼리": "홍대 경의선숲길", "위도": 37.558803479324, "경도": 126.925338455597, "주소": "서울 마포구 동교동 190-1", "카테고리": NaN}, {"동네": "홍대", "장소명": "육지", "종류": "식당", "언급횟수": 8, "검색쿼리": "홍대 육지", "위도": 37.5497071933215, "경도": 126.917495034617, "주소": "서울 마포구 서교동 396-45", "카테고리": "음식점"}, {"동네": "홍대", "장소명": "스시오", "종류": "식당", "언급횟수": 6, "검색쿼리": "홍대 스시오", "위도": 37.553702008954, "경도": 126.922505224188, "주소": "서울 마포구 서교동 358-8", "카테고리": "음식점"}, {"동네": "홍대", "장소명": "PZPZ(피지피지)", "종류": "식당", "언급횟수": 6, "검색쿼리": "홍대 PZPZ(피지피지)", "위도": 37.54954136414458, "경도": 126.92139033603668, "주소": "서울 마포구 서교동 408-11", "카테고리": "음식점"}, {"동네": "홍대", "장소명": "만월다방", "종류": "카페", "언급횟수": 5, "검색쿼리": "홍대 만월다방", "위도": 37.5450615631976, "경도": 126.925504925373, "주소": "서울 마포구 상수동 356-7", "카테고리": "카페"}, {"동네": "홍대", "장소명": "훌리건커피", "종류": "카페", "언급횟수": 5, "검색쿼리": "홍대 훌리건커피", "위도": 37.55575515213327, "경도": 126.92636911508237, "주소": "서울 마포구 서교동 332-28", "카테고리": "카페"}, {"동네": "홍대", "장소명": "홍익대학교", "종류": "랜드마크", "언급횟수": 4, "검색쿼리": "홍대 홍익대학교", "위도": 37.555186826703, "경도": 126.92246520784865, "주소": "서울 마포구 동교동 162-5", "카테고리": "숙박"}, {"동네": "홍대", "장소명": "달콤한거짓말", "종류": "카페", "언급횟수": 3, "검색쿼리": "홍대 달콤한거짓말", "위도": 37.54807581094916, "경도": 126.9205986081996, "주소": "서울 마포구 상수동 317-11", "카테고리": "카페"}, {"동네": "홍대", "장소명": "중경식객", "종류": "식당", "언급횟수": 3, "검색쿼리": "홍대 중경식객", "위도": 37.5560942906102, "경도": 126.924097372948, "주소": "서울 마포구 동교동 164-20", "카테고리": "음식점"}, {"동네": "홍대", "장소명": "너가술집사장", "종류": "바", "언급횟수": 3, "검색쿼리": "홍대 너가술집사장", "위도": 37.5512059328602, "경도": 126.922031375914, "주소": "서울 마포구 서교동 363-21", "카테고리": "음식점"}, {"동네": "홍대", "장소명": "피자네버슬립스", "종류": "식당", "언급횟수": 3, "검색쿼리": "홍대 피자네버슬립스", "위도": 37.54859142916518, "경도": 126.91831895917666, "주소": "서울 마포구 서교동 400-13", "카테고리": "음식점"}, {"동네": "홍대", "장소명": "하이디라오 홍대점", "종류": "식당", "언급횟수": 3, "검색쿼리": "홍대 하이디라오 홍대점", "위도": 37.5571921297692, "경도": 126.924760602353, "주소": "서울 마포구 동교동 166-14", "카테고리": "음식점"}, {"동네": "홍대", "장소명": "연남동", "종류": "거리", "언급횟수": 3, "검색쿼리": "홍대 연남동", "위도": 37.5589137902772, "경도": 126.917787071063, "주소": "서울 마포구 연남동 487-401", "카테고리": NaN}, {"동네": "홍대", "장소명": "오밀", "종류": "식당", "언급횟수": 3, "검색쿼리": "홍대 오밀", "위도": 37.557459268386445, "경도": 126.92545976376216, "주소": "서울 마포구 동교동 166-3", "카테고리": "음식점"}, {"동네": "홍대", "장소명": "구우움베이커리", "종류": "카페", "언급횟수": 2, "검색쿼리": "홍대 구우움베이커리", "위도": 37.55687155662541, "경도": 126.92225974641988, "주소": "서울 마포구 동교동 158-10", "카테고리": "음식점"}, {"동네": "홍대", "장소명": "내면의발견", "종류": "카페", "언급횟수": 2, "검색쿼리": "홍대 내면의발견", "위도": 37.5560870399809, "경도": 126.916048424246, "주소": "서울 마포구 서교동 460-2", "카테고리": "카페"}, {"동네": "홍대", "장소명": "면식당", "종류": "식당", "언급횟수": 2, "검색쿼리": "홍대 면식당", "위도": 37.5530062535772, "경도": 126.92500925708, "주소": "서울 마포구 서교동 338-46", "카테고리": "음식점"}, {"동네": "홍대", "장소명": "우삼집", "종류": "식당", "언급횟수": 2, "검색쿼리": "홍대 우삼집", "위도": 37.561038650759, "경도": 126.92502044803, "주소": "서울 마포구 연남동 260-39", "카테고리": "음식점"}, {"동네": "홍대", "장소명": "단막", "종류": "식당", "언급횟수": 2, "검색쿼리": "홍대 단막", "위도": 37.5488873814468, "경도": 126.918935376816, "주소": "서울 마포구 서교동 400-24", "카테고리": "음식점"}, {"동네": "이태원", "장소명": "와이키키 유토피아", "종류": "바", "언급횟수": 11, "검색쿼리": "이태원 와이키키 유토피아", "위도": 37.5348756358266, "경도": 126.993222778372, "주소": "서울 용산구 이태원동 119-7", "카테고리": "음식점"}, {"동네": "이태원", "장소명": "김실력포차", "종류": "식당", "언급횟수": 7, "검색쿼리": "이태원 김실력포차", "위도": 37.5351306754053, "경도": 126.99428855905, "주소": "서울 용산구 이태원동 112-6", "카테고리": "음식점"}, {"동네": "이태원", "장소명": "이코복스커피 스튜디오", "종류": "카페", "언급횟수": 6, "검색쿼리": "이태원 이코복스커피 스튜디오", "위도": 37.53398467252372, "경도": 126.9959948114923, "주소": "서울 용산구 이태원동 136-6", "카테고리": "카페"}, {"동네": "이태원", "장소명": "해방촌", "종류": "거리", "언급횟수": 4, "검색쿼리": "이태원 해방촌", "위도": 37.5390142761733, "경도": 126.986688076957, "주소": "서울 용산구 용산동2가 48", "카테고리": NaN}, {"동네": "이태원", "장소명": "트로이카", "종류": "식당", "언급횟수": 3, "검색쿼리": "이태원 트로이카", "위도": 37.534078188601, "경도": 126.992224946391, "주소": "서울 용산구 이태원동 72-33", "카테고리": "음식점"}, {"동네": "이태원", "장소명": "야상해", "종류": "식당", "언급횟수": 3, "검색쿼리": "이태원 야상해", "위도": 37.53480443131473, "경도": 126.9927928446203, "주소": "서울 용산구 이태원동 119-16", "카테고리": "음식점"}, {"동네": "이태원", "장소명": "와이키키비치포차", "종류": "식당", "언급횟수": 3, "검색쿼리": "이태원 와이키키비치포차", "위도": 37.533789828899, "경도": 126.991647959146, "주소": "서울 용산구 이태원동 64-27", "카테고리": "음식점"}, {"동네": "이태원", "장소명": "메르씨 삐삐", "종류": "식당", "언급횟수": 3, "검색쿼리": "이태원 메르씨 삐삐", "위도": 37.5325203040935, "경도": 126.991447845207, "주소": "서울 용산구 이태원동 63-41", "카테고리": "음식점"}, {"동네": "이태원", "장소명": "용산구청 주차장", "종류": "랜드마크", "언급횟수": 3, "검색쿼리": "이태원 용산구청 주차장", "위도": 37.53209497260624, "경도": 126.9906695038964, "주소": "서울 용산구 이태원동 34-87", "카테고리": "주차장"}, {"동네": "이태원", "장소명": "이코복스", "종류": "카페", "언급횟수": 3, "검색쿼리": "이태원 이코복스", "위도": 37.53398467252372, "경도": 126.9959948114923, "주소": "서울 용산구 이태원동 136-6", "카테고리": "카페"}, {"동네": "이태원", "장소명": "별밤포차", "종류": "바", "언급횟수": 3, "검색쿼리": "이태원 별밤포차", "위도": 37.5340836835415, "경도": 126.993719539324, "주소": "서울 용산구 이태원동 128-4", "카테고리": "음식점"}, {"동네": "이태원", "장소명": "나무아래류", "종류": "카페", "언급횟수": 2, "검색쿼리": "이태원 나무아래류", "위도": 37.53175450954812, "경도": 126.99226704850244, "주소": "서울 용산구 이태원동 36-14", "카테고리": "카페"}, {"동네": "이태원", "장소명": "흑해", "종류": "카페", "언급횟수": 2, "검색쿼리": "이태원 흑해", "위도": 37.5459950503151, "경도": 126.985249715576, "주소": "서울 용산구 용산동2가 1-20", "카테고리": "음식점"}, {"동네": "이태원", "장소명": "보광리광장", "종류": "식당", "언급횟수": 2, "검색쿼리": "이태원 보광리광장", "위도": 37.5339305932361, "경도": 126.995463052453, "주소": "서울 용산구 이태원동 132-1", "카테고리": "음식점"}, {"동네": "이태원", "장소명": "꾸띠자르당", "종류": "식당", "언급횟수": 2, "검색쿼리": "이태원 꾸띠자르당", "위도": 37.5337341286844, "경도": 126.99438483501056, "주소": "서울 용산구 이태원동 131-34", "카테고리": "음식점"}, {"동네": "이태원", "장소명": "아지양", "종류": "식당", "언급횟수": 2, "검색쿼리": "이태원 아지양", "위도": 37.5350764756171, "경도": 126.991898992157, "주소": "서울 용산구 이태원동 118-12", "카테고리": "음식점"}, {"동네": "이태원", "장소명": "쿠시노리", "종류": "식당", "언급횟수": 2, "검색쿼리": "이태원 쿠시노리", "위도": 37.54092022170618, "경도": 126.99004267702776, "주소": "서울 용산구 이태원동 255-42", "카테고리": "음식점"}, {"동네": "이태원", "장소명": "이진칸", "종류": "식당", "언급횟수": 2, "검색쿼리": "이태원 이진칸", "위도": 37.53381701627662, "경도": 126.9942909220442, "주소": "서울 용산구 이태원동 131-3", "카테고리": "음식점"}, {"동네": "イテウォン", "장소명": "그래픽 이태원", "종류": "카페", "언급횟수": 2, "검색쿼리": "이태원 그래픽 이태원", "위도": 37.5409312792296, "경도": 126.993584314814, "주소": "서울 용산구 이태원동 258-166", "카테고리": NaN}];
+const MORAN   = {"I": 0.2335, "p": 0.05, "z": 1.9293, "significant": false};
+const KEYWORDS= [{"동네": "을지로", "감성_키워드": "핫플, 힙한, 데이트, 레트로, 감성, 분위기좋은, 인스타감성, 차분한, 웨이팅, 회식, 힙지로, 숨은맛집, 아늑한, 조용한, 감각적인", "분위기_태그": "#힙지로 #을지로데이트 #을지로맛집 #감성카페 #레트로감성 #을지로카페 #을지로핫플 #웨이팅맛집 #데이트코스 #인스타핫플"}, {"동네": "성수동", "감성_키워드": "감성, 데이트, 힙한, 핫플, 분위기좋은, 신상, 웨이팅, 이국적, 깔끔한, 특별한, 분위기, 블루리본, 미슐랭, 아기자기한, 조용한", "분위기_태그": "#성수핫플 #감성카페 #성수데이트 #데이트코스 #성수카페 #성수맛집 #웨이팅맛집 #성수동핫플 #성수동맛집 #성수동데이트"}, {"동네": "홍대", "감성_키워드": "분위기좋은, 가성비, 핫플, 힙한, 세련된, 데이트, 조용한, 인스타감성, 감성, 아늑한, 트렌디, 이색, 차분한, 편안한, 감성적인", "분위기_태그": "#홍대핫플 #홍대맛집 #홍대데이트 #감성카페 #가성비맛집 #인스타감성 #분위기맛집 #데이트코스 #홍대카페 #분위기좋은카페"}, {"동네": "이태원", "감성_키워드": "힙한, 감성, 데이트, 세련된, 분위기좋은, 감각적인, 예쁜, 핫플, 가성비, 이국적인, 레트로, 아늑한, 빈티지, 이색적인, 편안한", "분위기_태그": "#이태원데이트 #이태원맛집 #루프탑 #이태원핫플 #테라스카페 #한남동맛집 #이태원카페 #힙한카페 #브런치카페 #비건카페"}];
+
+// ── 색상 함수 ─────────────────────────────────────────────────────
+const LISA_COLORS = {
+  "HH (감성 핵심)":      { fill:"#7c3aed", stroke:"#a855f7", opacity:0.85 },
+  "LH (감성 전파 중)":   { fill:"#a78bfa", stroke:"#c4b5fd", opacity:0.85 },
+  "LL (감성 미도달)":    { fill:"#374151", stroke:"#4b5563", opacity:0.7  },
+  "HL (고립 힙스팟)":    { fill:"#d97706", stroke:"#f59e0b", opacity:0.8  },
+  "Non-significant":     { fill:"#1e1b30", stroke:"#3a3660", opacity:0.5  }
+};
+
+function scoreToColor(score) {
+  const v = Math.min(1, score / 100);
+  const r = Math.round(30  + v * 90);
+  const g = Math.round(28  + v * 10);
+  const b = Math.round(50  + v * 180);
+  return `rgb(${r},${g},${b})`;
+}
+
+const KIND_EMOJI = { 카페:"☕", 식당:"🍽", 랜드마크:"🏛", 바:"🍶", 거리:"🛤" };
+
+// ── 지도 초기화 ───────────────────────────────────────────────────
+const map = L.map("map", {
+  center: [37.555, 127.02],
+  zoom: 13,
+  zoomControl: true,
+  preferCanvas: true
+});
+
+L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+  attribution:'&copy; CartoDB',
+  maxZoom: 19
+}).addTo(map);
+
+// ── 레이어 그룹 ───────────────────────────────────────────────────
+const layers = { hex: L.layerGroup(), lisa: L.layerGroup(), places: L.layerGroup(), arrows: L.layerGroup() };
+Object.values(layers).forEach(l => l.addTo(map));
+
+function toggleLayer(name) {
+  const el = document.getElementById("tog-"+name);
+  if (el.checked) layers[name].addTo(map);
+  else map.removeLayer(layers[name]);
+}
+
+document.getElementById("moran-badge").textContent = `Global Moran's I = ${MORAN.I} (p = ${MORAN.p})`;
+document.getElementById("stat-moran-i").textContent = MORAN.I;
+document.getElementById("stat-moran-p").textContent = MORAN.p;
+
+GEOJSON.features.forEach(f => {
+  const score = f.properties.score_norm || 0;
+  const color = scoreToColor(score);
+  const poly = L.geoJSON(f, {
+    style: { color:"#000", weight:0.5, fillColor:color, fillOpacity:0.45 }
+  });
+  layers.hex.addLayer(poly);
+});
+
+let hhCenters=[], lhCenters=[];
+GEOJSON.features.forEach(f => {
+  const label = f.properties.lisa_label;
+  if (label === "Non-significant") return;
+  const cfg = LISA_COLORS[label] || LISA_COLORS["Non-significant"];
+  const isDashed = label.startsWith("LH");
+  const poly = L.geoJSON(f, {
+    style: {
+      color: cfg.stroke, weight: isDashed ? 2 : 1.5,
+      dashArray: isDashed ? "5,4" : null,
+      fillColor: cfg.fill, fillOpacity: cfg.opacity
+    }
+  });
+
+  const coords = f.geometry.coordinates[0];
+  const lat = coords.reduce((s,c)=>s+c[1],0)/coords.length;
+  const lng = coords.reduce((s,c)=>s+c[0],0)/coords.length;
+
+  if (label.startsWith("HH")) hhCenters.push({lat, lng, props:f.properties});
+  if (label.startsWith("LH")) lhCenters.push({lat, lng, props:f.properties});
+
+  const p = f.properties;
+  let extra = "";
+  if (label.startsWith("LH")) {
+    extra = `<div class="popup-highlight">⭐ 다음 힙 골목 후보!<br>이웃 감성이 이 격자로 흘러들고 있어요.</div>`;
+  }
+  poly.bindPopup(`
+    <div class="popup-title">${label}</div>
+    <div class="popup-row">동네: <span>${p["동네"]}</span></div>
+    <div class="popup-row">감성 점수: <span>${(p.score_norm||0).toFixed(1)}</span></div>
+    <div class="popup-row">장소 수: <span>${p.place_count}</span></div>
+    <div class="popup-row">장소: <span>${p["장소목록"]||"-"}</span></div>
+    ${extra}
+  `, {maxWidth:260});
+
+  layers.lisa.addLayer(poly);
+
+  if (!label.startsWith("Non") && !label.startsWith("LL")) {
+    const icon = L.divIcon({
+      html:`<div style="background:${cfg.fill};color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;white-space:nowrap;border:1px solid ${cfg.stroke};">${label.split(" ")[0]}</div>`,
+      className:"", iconAnchor:[20,10]
+    });
+    layers.lisa.addLayer(L.marker([lat, lng], {icon}));
+  }
+});
+
+PLACES.forEach(p => {
+  if (!p["위도"] || !p["경도"]) return;
+  const emoji = KIND_EMOJI[p["종류"]] || "📍";
+  const size = Math.max(22, Math.min(36, 18 + p["언급횟수"] * 1.5));
+  const icon = L.divIcon({
+    html:`<div style="width:${size}px;height:${size}px;border-radius:50%;background:rgba(200,168,255,0.15);border:1.5px solid rgba(200,168,255,0.5);display:flex;align-items:center;justify-content:center;font-size:${size*0.45}px;cursor:pointer;" title="${p["장소명"]}">${emoji}</div>`,
+    className:"", iconAnchor:[size/2, size/2]
+  });
+  const marker = L.marker([p["위도"], p["경도"]], {icon});
+  marker.bindPopup(`
+    <div class="popup-title">${emoji} ${p["장소명"]}</div>
+    <div class="popup-row">동네: <span>${p["동네"]}</span></div>
+    <div class="popup-row">종류: <span>${p["종류"]}</span></div>
+    <div class="popup-row">언급횟수: <span>${p["언급횟수"]}회</span></div>
+    <div class="popup-row">주소: <span>${p["주소"]||"-"}</span></div>
+  `, {maxWidth:230});
+  layers.places.addLayer(marker);
+});
+
+if (hhCenters.length && lhCenters.length) {
+  lhCenters.forEach(lh => {
+    let best = hhCenters[0], bestDist = Infinity;
+    hhCenters.forEach(hh => {
+      const d = Math.hypot(hh.lat-lh.lat, hh.lng-lh.lng);
+      if (d < bestDist) { bestDist=d; best=hh; }
+    });
+    const arrow = L.polyline([[best.lat,best.lng],[lh.lat,lh.lng]], {
+      color:"#a78bfa", weight:2.5, dashArray:"6,4", opacity:0.8
+    });
+    arrow.bindPopup(`<div class="popup-title">➡️ 감성 전파 방향</div><div class="popup-row">HH → LH (감성이 흘러가는 방향)</div>`);
+    layers.arrows.addLayer(arrow);
+
+    const arrowIcon = L.divIcon({
+      html:`<div style="font-size:18px;line-height:1;">⭐</div>`,
+      className:"", iconAnchor:[9,9]
+    });
+    layers.arrows.addLayer(L.marker([lh.lat, lh.lng], {icon:arrowIcon}));
+  });
+}
+
+const nbhdList = document.getElementById("nbhd-list");
+const NBHD_BOUNDS = {
+  "성수동": [37.535, 127.035, 37.555, 127.065],
+  "을지로":  [37.558, 126.975, 37.575, 127.003],
+  "홍대":   [37.547, 126.917, 37.562, 126.940],
+  "이태원":  [37.528, 126.984, 37.543, 127.003],
+};
+
+KEYWORDS.forEach(k => {
+  const tags = (k["분위기_태그"]||"").replace(/#/g,"").split(/[,\s]+/).filter(Boolean).slice(0,5);
+  const kws  = (k["감성_키워드"]||"").split(",").map(s=>s.trim()).filter(Boolean);
+
+  const hexRows = GEOJSON.features.filter(f => f.properties["동네"] === k["동네"]);
+  const avgScore = hexRows.length ? hexRows.reduce((s,f)=>s+(f.properties.score_norm||0),0)/hexRows.length : 0;
+
+  const card = document.createElement("div");
+  card.className = "nbhd-card";
+  card.innerHTML = `
+    <div class="nbhd-name">${k["동네"]}</div>
+    <div class="nbhd-tags">${tags.map(t=>`<span class="tag">#${t}</span>`).join("")}</div>
+    <div class="nbhd-score" style="margin-top:7px;">
+      <div style="font-size:10px;color:#6860a0;margin-bottom:3px;">평균 감성 점수 ${avgScore.toFixed(1)}</div>
+      <div class="score-bar-bg"><div class="score-bar" style="width:${Math.min(100,avgScore)}%"></div></div>
+    </div>
+  `;
+  card.onclick = () => {
+    const b = NBHD_BOUNDS[k["동네"]];
+    if (b) map.fitBounds([[b[0], b[1]], [b[2], b[3]]]);
+  };
+  nbhdList.appendChild(card);
+});
+
+function renderPlaces(filterNbhd=null) {
+  const placeList = document.getElementById("place-list");
+  placeList.innerHTML = "";
+  const label = document.getElementById("place-filter-label");
+  label.textContent = filterNbhd ? `· ${filterNbhd}` : "";
+  const sorted = [...PLACES].filter(p => !filterNbhd || p["동네"]===filterNbhd)
+                             .sort((a,b)=>b["언급횟수"]-a["언급횟수"]).slice(0,20);
+  sorted.forEach(p => {
+    if (!p["위도"]) return;
+    const emoji = KIND_EMOJI[p["종류"]] || "📍";
+    const item = document.createElement("div");
+    item.className = "place-item";
+    item.innerHTML = `
+      <div class="place-icon" style="background:rgba(160,120,240,0.1);">${emoji}</div>
+      <div><div class="place-name">${p["장소명"]}</div><div class="place-sub">${p["동네"]} · ${p["종류"]}</div></div>
+      <div class="place-score">×${p["언급횟수"]}</div>
+    `;
+    item.onclick = () => {
+      map.flyTo([p["위도"], p["경도"]], 16, {animate:true, duration:0.8});
+    };
+    placeList.appendChild(item);
+  });
+}
+renderPlaces();
+
+// ── URL 파라미터 기반 자동 줌인 및 바운즈 이동 코드 추가 ──
+const urlParams = new URLSearchParams(window.location.search);
+const targetNbhd = urlParams.get('nbhd');
+
+if (targetNbhd && NBHD_BOUNDS[targetNbhd]) {
+  const b = NBHD_BOUNDS[targetNbhd];
+  setTimeout(() => {
+    map.fitBounds([[b[0], b[1]], [b[2], b[3]]]);
+    renderPlaces(targetNbhd);
+  }, 300);
+}
+</script>
+</body>
+</html>
