@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_8e55f8b7a153902d94f42dd35a13dcb3 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+    <div style="position: fixed; bottom: 30px; left: 30px; z-index: 1000;
+                background: rgba(0,0,0,0.85); padding: 15px 20px;
+                border-radius: 10px; color: white;
+                font-family: sans-serif; font-size: 13px; line-height: 1.8;">
+        <b style="font-size:14px">🗺 감성 점수 (격자)</b><br>
+        <span style="color:#FF4500">■</span> 75~100 &nbsp;핵심 감성 거점<br>
+        <span style="color:#FF8C00">■</span> 50~75 &nbsp;&nbsp;감성 활발<br>
+        <span style="color:#FFD700">■</span> 25~50 &nbsp;&nbsp;감성 형성 중<br>
+        <span style="color:#ADFF2F">■</span> 0~25 &nbsp;&nbsp;&nbsp;감성 낮음<br>
+        <br>
+        <b style="font-size:14px">📍 동네별 장소</b><br>
+        <span style="color:#FF3333">●</span> 을지로 &nbsp;
+        <span style="color:#00CCFF">●</span> 성수동<br>
+        <span style="color:#FFFF00">●</span> 홍대 &nbsp;&nbsp;&nbsp;
+        <span style="color:#FF00FF">●</span> 이태원
+    </div>
+    
+    
+            <div class="folium-map" id="map_8e55f8b7a153902d94f42dd35a13dcb3" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_8e55f8b7a153902d94f42dd35a13dcb3 = L.map(
+                "map_8e55f8b7a153902d94f42dd35a13dcb3",
+                {
+                    center: [37.545, 126.986],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 13,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_86a13155943a423ed6a81a878a033803 = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_86a13155943a423ed6a81a878a033803.addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            var polygon_adad19cbe47a422b6bf967f071d41e7b = L.polygon(
+                [[37.540583486505795, 127.05982077640554], [37.54210440736146, 127.05907346035944], [37.542321025071956, 127.05734282111261], [37.54101676094635, 127.05635957851044], [37.539495893304746, 127.05710690728733], [37.53927923657554, 127.05883746593787]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_adad19cbe47a422b6bf967f071d41e7b.bindTooltip(
+                `<div>
+                     <b>성수동</b><br>감성 점수: <b>4.0</b><br>장소 수: 1개 | 총 언급: 3회<br>장소: bd버거
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_e16cd9ec85ec4d08f653b82c7de597aa = L.polygon(
+                [[37.53884582712001, 127.06229871466223], [37.54036680128603, 127.0615514410678], [37.540583486505795, 127.05982077640554], [37.53927923657554, 127.05883746593787], [37.537758315625574, 127.05958475226934], [37.53754159139071, 127.06131533633368]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_e16cd9ec85ec4d08f653b82c7de597aa.bindTooltip(
+                `<div>
+                     <b>성수동</b><br>감성 점수: <b>10.7</b><br>장소 수: 1개 | 총 언급: 3회<br>장소: 성수율 카페
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_dfd343b02c21e5c2ce02bbb17924bb28 = L.polygon(
+                [[37.542321025071956, 127.05734282111261], [37.54384189261316, 127.05659546261705], [37.54405844281581, 127.05486484879252], [37.54275416450042, 127.05388167406049], [37.54123335017128, 127.05462904528054], [37.54101676094635, 127.05635957851044]],
+                {"bubblingMouseEvents": true, "color": "#FF8C00", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF8C00", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_dfd343b02c21e5c2ce02bbb17924bb28.bindTooltip(
+                `<div>
+                     <b>성수동</b><br>감성 점수: <b>56.0</b><br>장소 수: 4개 | 총 언급: 11회<br>장소: 베통 성수, 마를리, 성수동 카페거리, 우스블랑
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_19e8bb71cc7bf3f5e6e4530bf6df3a36 = L.polygon(
+                [[37.543408696211415, 127.06005682171224], [37.54492961696554, 127.05930947594916], [37.54514619565589, 127.05757875609861], [37.54384189261316, 127.05659546261705], [37.542321025071956, 127.05734282111261], [37.54210440736146, 127.05907346035944]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_19e8bb71cc7bf3f5e6e4530bf6df3a36.bindTooltip(
+                `<div>
+                     <b>성수동</b><br>감성 점수: <b>5.3</b><br>장소 수: 1개 | 총 언급: 6회<br>장소: 용용선생 마라도원
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_611312b071a3840b96ecf52fbfa1168f = L.polygon(
+                [[37.546444995868924, 127.04719535720254], [37.54796565023601, 127.04644785866627], [37.54818196945863, 127.0447174271876], [37.54687767335008, 127.04373457482815], [37.54535707218805, 127.04448208606212], [37.5451407139304, 127.04621243696009]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_611312b071a3840b96ecf52fbfa1168f.bindTooltip(
+                `<div>
+                     <b>성수동</b><br>감성 점수: <b>2.7</b><br>장소 수: 1개 | 총 언급: 2회<br>장소: 미테이블
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_0ac0b6123d02b9ae2f678fe26e23b9d0 = L.polygon(
+                [[37.5475329158261, 127.04990885310718], [37.549053623399175, 127.04916136727657], [37.54926997108723, 127.04743082976013], [37.54796565023601, 127.04644785866627], [37.546444995868924, 127.04719535720254], [37.546228609147924, 127.04892581412926]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_0ac0b6123d02b9ae2f678fe26e23b9d0.bindTooltip(
+                `<div>
+                     <b>성수동</b><br>감성 점수: <b>5.3</b><br>장소 수: 1개 | 총 언급: 5회<br>장소: 브리비트
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_df6b1199036a280d4bedd1618202b621 = L.polygon(
+                [[37.54926997108723, 127.04743082976013], [37.55079062532938, 127.04668330148897], [37.55100690551547, 127.0449527894223], [37.549702570496784, 127.04396988621707], [37.54818196945863, 127.0447174271876], [37.54796565023601, 127.04644785866627]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_df6b1199036a280d4bedd1618202b621.bindTooltip(
+                `<div>
+                     <b>성수동</b><br>감성 점수: <b>4.0</b><br>장소 수: 1개 | 총 언급: 3회<br>장소: 진작다이닝
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_f501c5176cdc739d06fd21b275bea860 = L.polygon(
+                [[37.54535707218805, 127.04448208606212], [37.54687767335008, 127.04373457482815], [37.547093964114374, 127.0420042493835], [37.54578969275473, 127.04102151574654], [37.54426914479692, 127.04176903967016], [37.54405281499542, 127.04349928454326]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_f501c5176cdc739d06fd21b275bea860.bindTooltip(
+                `<div>
+                     <b>성수동</b><br>감성 점수: <b>10.7</b><br>장소 수: 1개 | 총 언급: 4회<br>장소: 5TO7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_db8bb10f3dc91527c71af2df95a6b6a7 = L.polygon(
+                [[37.54688357426838, 127.05510067345546], [37.54840438837718, 127.05435324278761], [37.548620832046225, 127.05262257379181], [37.54731650063465, 127.05163941606652], [37.54579573973475, 127.05238685945437], [37.54557925703843, 127.0541174478497]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_db8bb10f3dc91527c71af2df95a6b6a7.bindTooltip(
+                `<div>
+                     <b>성수동</b><br>감성 점수: <b>2.7</b><br>장소 수: 1개 | 총 언급: 2회<br>장소: 전자방
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_f28827874e7e73f4131a83efb9e847d2 = L.polygon(
+                [[37.54405844281581, 127.05486484879252], [37.54557925703843, 127.0541174478497], [37.54579573973475, 127.05238685945437], [37.54449144723521, 127.05140375259705], [37.5429706862226, 127.0521511662581], [37.54275416450042, 127.05388167406049]],
+                {"bubblingMouseEvents": true, "color": "#FFD700", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFD700", "fillOpacity": 0.45, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_f28827874e7e73f4131a83efb9e847d2.bindTooltip(
+                `<div>
+                     <b>성수동</b><br>감성 점수: <b>34.7</b><br>장소 수: 3개 | 총 언급: 7회<br>장소: 도토리오븐, 마루마끼, 아임도넛
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_8e92d04488ddfb76cafb585c73b67598 = L.polygon(
+                [[37.5497087445159, 127.05533651927216], [37.551229558503586, 127.05458905887699], [37.55144596314396, 127.0528583092733], [37.55014159282621, 127.0518751006749], [37.548620832046225, 127.05262257379181], [37.54840438837718, 127.05435324278761]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_8e92d04488ddfb76cafb585c73b67598.bindTooltip(
+                `<div>
+                     <b>성수동</b><br>감성 점수: <b>5.3</b><br>장소 수: 1개 | 총 언급: 6회<br>장소: 오밀
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_59afa12c59f25813d400c5e6439e555c = L.polygon(
+                [[37.547093964114374, 127.0420042493835], [37.54861451194948, 127.04125669572151], [37.548830735221905, 127.03952639573706], [37.54752644970083, 127.03854372998664], [37.54600595506788, 127.03929129633195], [37.54578969275473, 127.04102151574654]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_59afa12c59f25813d400c5e6439e555c.bindTooltip(
+                `<div>
+                     <b>성수동</b><br>감성 점수: <b>9.3</b><br>장소 수: 1개 | 총 언급: 2회<br>장소: 스페셜땡스투
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_dc62d724cf31d3f9110d8eb39f800aa6 = L.polygon(
+                [[37.543181213708884, 127.03905621801088], [37.5447017084634, 127.03830868140567], [37.54491794233257, 127.03657856801729], [37.5436137204895, 127.03559607178973], [37.542093278937365, 127.03634362106854], [37.541877006026816, 127.03807365390357]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_dc62d724cf31d3f9110d8eb39f800aa6.bindTooltip(
+                `<div>
+                     <b>성수동</b><br>감성 점수: <b>4.0</b><br>장소 수: 1개 | 총 언급: 16회<br>장소: 서울숲
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_953287722a8ca7a725ade57b874ecb8c = L.polygon(
+                [[37.5573865046177, 126.92496402677496], [37.55890465605925, 126.92421528361244], [37.559118784141965, 126.92248806626111], [37.55781479994952, 126.92150967239128], [37.55629670164575, 126.9222584279136], [37.556082534397504, 126.92398556494817]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_953287722a8ca7a725ade57b874ecb8c.bindTooltip(
+                `<div>
+                     <b>홍대</b><br>감성 점수: <b>18.7</b><br>장소 수: 2개 | 총 언급: 5회<br>장소: 하이디라오 홍대점, 구우움베이커리
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_318896f3e4abe87e5d9c647a8952ea32 = L.polygon(
+                [[37.55802889986282, 126.9197825610901], [37.559546944800445, 126.91903376334594], [37.55976097738042, 126.91730667778498], [37.55845700419479, 126.91632847027634], [37.55693901239202, 126.91707728036609], [37.55672494064095, 126.91880428562108]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_318896f3e4abe87e5d9c647a8952ea32.bindTooltip(
+                `<div>
+                     <b>홍대</b><br>감성 점수: <b>2.7</b><br>장소 수: 1개 | 총 언급: 3회<br>장소: 연남동
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_43e701ba2ed09e5eb4ecc92ae2b23497 = L.polygon(
+                [[37.56129854307179, 126.92789975000775], [37.562816747419454, 126.92715098934806], [37.56303086451369, 126.92542358560947], [37.561726816426095, 126.92444502286594], [37.56020866521604, 126.92519379589505], [37.5599945089569, 126.92692111930045]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_43e701ba2ed09e5eb4ecc92ae2b23497.bindTooltip(
+                `<div>
+                     <b>홍대</b><br>감성 점수: <b>2.7</b><br>장소 수: 1개 | 총 언급: 2회<br>장소: 우삼집
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_202e513c85cffa2f822bfd776c6298ac = L.polygon(
+                [[37.558476304376576, 126.92766985009521], [37.5599945089569, 126.92692111930045], [37.56020866521604, 126.92519379589505], [37.55890465605925, 126.92421528361244], [37.5573865046177, 126.92496402677496], [37.55717230919506, 126.92669126985453]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_202e513c85cffa2f822bfd776c6298ac.bindTooltip(
+                `<div>
+                     <b>홍대</b><br>감성 점수: <b>17.3</b><br>장소 수: 2개 | 총 언급: 14회<br>장소: 경의선숲길, 오밀
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_6ffa298d782a39ec2b5ae7cc50ead473 = L.polygon(
+                [[37.544365691781316, 126.92652065953766], [37.54588389741616, 126.92577207803267], [37.54609824947806, 126.92404515618232], [37.5447944350622, 126.92306689612805], [37.54327628257173, 126.92381548999232], [37.543061891353645, 126.92554233155384]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_6ffa298d782a39ec2b5ae7cc50ead473.bindTooltip(
+                `<div>
+                     <b>홍대</b><br>감성 점수: <b>12.0</b><br>장소 수: 1개 | 총 언급: 5회<br>장소: 만월다방
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_d55bf1b00669ed046b976cbab78e167b = L.polygon(
+                [[37.54783068650935, 126.92156963633425], [37.54934878546077, 126.92082097040294], [37.54956300287258, 126.91909410000244], [37.548259160497075, 126.91811597582094], [37.546741114685965, 126.91886465409901], [37.5465268581109, 126.92059144421404]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_d55bf1b00669ed046b976cbab78e167b.bindTooltip(
+                `<div>
+                     <b>홍대</b><br>감성 점수: <b>20.0</b><br>장소 수: 2개 | 총 언급: 5회<br>장소: 달콤한거짓말, 단막
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_c07778ccd1606cb72f74706766dd46dc = L.polygon(
+                [[37.54892025514884, 126.92427484295287], [37.55043840724145, 126.92352618937622], [37.55065265281642, 126.9217992129529], [37.54934878546077, 126.92082097040294], [37.54783068650935, 126.92156963633425], [37.547616401773226, 126.92329653246307]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_c07778ccd1606cb72f74706766dd46dc.bindTooltip(
+                `<div>
+                     <b>홍대</b><br>감성 점수: <b>5.3</b><br>장소 수: 1개 | 총 언급: 6회<br>장소: PZPZ(피지피지)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_535163b406490d64930b7fd3aa069b83 = L.polygon(
+                [[37.54956300287258, 126.91909410000244], [37.55108104847621, 126.91834539186135], [37.55129519856524, 126.91661854719604], [37.54999134221832, 126.9156404909578], [37.54847334975291, 126.9163892114394], [37.548259160497075, 126.91811597582094]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_535163b406490d64930b7fd3aa069b83.bindTooltip(
+                `<div>
+                     <b>홍대</b><br>감성 점수: <b>16.0</b><br>장소 수: 2개 | 총 언급: 11회<br>장소: 육지, 피자네버슬립스
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_9f28addc4540033b6212fa61a432f968 = L.polygon(
+                [[37.55283194312323, 126.92721011207944], [37.55435014814705, 126.92646144100756], [37.554564382731705, 126.92473427824639], [37.55326045145391, 126.92375586687037], [37.551742299571075, 126.92450455030661], [37.55152802582589, 126.92623163275677]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_9f28addc4540033b6212fa61a432f968.bindTooltip(
+                `<div>
+                     <b>홍대</b><br>감성 점수: <b>2.7</b><br>장소 수: 1개 | 총 언급: 2회<br>장소: 면식당
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_b72c643fa1a3dca7e57ecd0be3bed369 = L.polygon(
+                [[37.554564382731705, 126.92473427824639], [37.556082534397504, 126.92398556494817], [37.55629670164575, 126.9222584279136], [37.55499275639311, 126.92128008448879], [37.55347465786621, 126.92202881014511], [37.55326045145391, 126.92375586687037]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_b72c643fa1a3dca7e57ecd0be3bed369.bindTooltip(
+                `<div>
+                     <b>홍대</b><br>감성 점수: <b>12.0</b><br>장소 수: 2개 | 총 언급: 10회<br>장소: 스시오, 홍익대학교
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_465d55beae99abce8c6bcf8e852a67ce = L.polygon(
+                [[37.55565410438936, 126.92743997078671], [37.55717230919506, 126.92669126985453], [37.5573865046177, 126.92496402677496], [37.556082534397504, 126.92398556494817], [37.554564382731705, 126.92473427824639], [37.55435014814705, 126.92646144100756]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_465d55beae99abce8c6bcf8e852a67ce.bindTooltip(
+                `<div>
+                     <b>홍대</b><br>감성 점수: <b>22.7</b><br>장소 수: 2개 | 총 언급: 8회<br>장소: 훌리건커피, 중경식객
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_e635e5c56a1e133dac1e0a94fdecfc75 = L.polygon(
+                [[37.551742299571075, 126.92450455030661], [37.55326045145391, 126.92375586687037], [37.55347465786621, 126.92202881014511], [37.55217075155919, 126.92105051716025], [37.55065265281642, 126.9217992129529], [37.55043840724145, 126.92352618937622]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_e635e5c56a1e133dac1e0a94fdecfc75.bindTooltip(
+                `<div>
+                     <b>홍대</b><br>감성 점수: <b>6.7</b><br>장소 수: 1개 | 총 언급: 3회<br>장소: 너가술집사장
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_513a427641381e834f40873ba25ea051 = L.polygon(
+                [[37.563128090645804, 126.9935237718596], [37.564647625815745, 126.99277559134678], [37.56486280165068, 126.99104625952828], [37.563558481416116, 126.99006518871856], [37.56203899941657, 126.99081338178506], [37.56182378448211, 126.99254263310978]],
+                {"bubblingMouseEvents": true, "color": "#FFD700", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFD700", "fillOpacity": 0.45, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_513a427641381e834f40873ba25ea051.bindTooltip(
+                `<div>
+                     <b>을지로</b><br>감성 점수: <b>49.3</b><br>장소 수: 4개 | 총 언급: 18회<br>장소: 페이퍼크레인, 떼르세로 코스테스, 콘티뉴이티, 도야집
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_f417005efa68953449a86ca53ab60112 = L.polygon(
+                [[37.56486280165068, 126.99104625952828], [37.56638228344843, 126.99029803665647], [37.56659739184233, 126.98856873042536], [37.56529305754251, 126.98758772756035], [37.56377362891316, 126.98833596297953], [37.563558481416116, 126.99006518871856]],
+                {"bubblingMouseEvents": true, "color": "#FFD700", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFD700", "fillOpacity": 0.45, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_f417005efa68953449a86ca53ab60112.bindTooltip(
+                `<div>
+                     <b>을지로</b><br>감성 점수: <b>28.0</b><br>장소 수: 3개 | 총 언급: 18회<br>장소: 달맞이광장바베큐, 을지로보석, 백염막창
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_42cf660e0a6800339bd4280ba24937d1 = L.polygon(
+                [[37.56595197087877, 126.99375678079257], [37.567471505845816, 126.99300857047619], [37.5676866425797, 126.9912791581564], [37.56638228344843, 126.99029803665647], [37.56486280165068, 126.99104625952828], [37.564647625815745, 126.99277559134678]],
+                {"bubblingMouseEvents": true, "color": "#FF8C00", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF8C00", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_42cf660e0a6800339bd4280ba24937d1.bindTooltip(
+                `<div>
+                     <b>을지로</b><br>감성 점수: <b>66.7</b><br>장소 수: 6개 | 총 언급: 33회<br>장소: 올디스타코, 산청숯불가든, 골수, 르템플, 장만옥, 대동옥
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_97de76d392fcd1b7d38cf3517ac3c104 = L.polygon(
+                [[37.56203899941657, 126.99081338178506], [37.563558481416116, 126.99006518871856], [37.56377362891316, 126.98833596297953], [37.562469333513306, 126.98735501079398], [37.56094990468332, 126.98810321640619], [37.56073471808457, 126.98983236166045]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_97de76d392fcd1b7d38cf3517ac3c104.bindTooltip(
+                `<div>
+                     <b>을지로</b><br>감성 점수: <b>9.3</b><br>장소 수: 1개 | 총 언급: 2회<br>장소: 루이 티하우스
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_b983313432b17f2f99cb8ad97d79d5d1 = L.polygon(
+                [[37.56530626253849, 126.99894522615898], [37.56682590405204, 126.99819707077758], [37.56704113658408, 126.99646752678827], [37.56573676669885, 126.99548621869454], [37.564217178357545, 126.99623438664564], [37.56400190673009, 126.99796385012299]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_b983313432b17f2f99cb8ad97d79d5d1.bindTooltip(
+                `<div>
+                     <b>을지로</b><br>감성 점수: <b>9.3</b><br>장소 수: 1개 | 총 언급: 2회<br>장소: 카페시나브로
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_6f993a49eadbff790faec470b7918f52 = L.polygon(
+                [[37.534244420916366, 126.99638062115103], [37.535764064207626, 126.99563279341862], [37.53597972670938, 126.99390413465291], [37.5346757850002, 126.9929233840522], [37.53315619489358, 126.99367122433536], [37.532940493312346, 126.99539980267069]],
+                {"bubblingMouseEvents": true, "color": "#FF4500", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF4500", "fillOpacity": 0.75, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_6f993a49eadbff790faec470b7918f52.bindTooltip(
+                `<div>
+                     <b>이태원</b><br>감성 점수: <b>100.0</b><br>장소 수: 8개 | 총 언급: 36회<br>장소: 와이키키 유토피아, 김실력포차, 이코복스커피 스튜디오, 이코복스, 별밤포차, 보광리광장, 꾸띠자르당, 이진칸
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_22d966d5095576cabbb185090e597c1b = L.polygon(
+                [[37.53597972670938, 126.99390413465291], [37.537499316691786, 126.99315626459335], [37.537714911781514, 126.99142763138637], [37.53641095597269, 126.99044694866987], [37.534891419172915, 126.99119483127392], [37.5346757850002, 126.9929233840522]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_22d966d5095576cabbb185090e597c1b.bindTooltip(
+                `<div>
+                     <b>이태원</b><br>감성 점수: <b>13.3</b><br>장소 수: 2개 | 총 언급: 5회<br>장소: 야상해, 아지양
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_847b6874e990e55716076cf1030adfcf = L.polygon(
+                [[37.53033270192069, 126.99343833489417], [37.531852292144265, 126.99269052438517], [37.53206796539856, 126.99096205202815], [37.530764087510214, 126.98998147059618], [37.529244550471496, 126.99072929364621], [37.52902883813712, 126.99245768558939]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_847b6874e990e55716076cf1030adfcf.bindTooltip(
+                `<div>
+                     <b>이태원</b><br>감성 점수: <b>9.3</b><br>장소 수: 1개 | 총 언급: 2회<br>장소: 나무아래류
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_215d97234c8f6219c0ade146490e1632 = L.polygon(
+                [[37.53206796539856, 126.99096205202815], [37.533587502321446, 126.99021419920226], [37.53380310817226, 126.98848575240744], [37.532499216184725, 126.9875052388529], [37.53097973244467, 126.98825310421357], [37.530764087510214, 126.98998147059618]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_215d97234c8f6219c0ade146490e1632.bindTooltip(
+                `<div>
+                     <b>이태원</b><br>감성 점수: <b>0.0</b><br>장소 수: 1개 | 총 언급: 3회<br>장소: 용산구청 주차장
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_df29fcf296ebf8770a72ea166a08adf8 = L.polygon(
+                [[37.53315619489358, 126.99367122433536], [37.5346757850002, 126.9929233840522], [37.534891419172915, 126.99119483127392], [37.533587502321446, 126.99021419920226], [37.53206796539856, 126.99096205202815], [37.531852292144265, 126.99269052438517]],
+                {"bubblingMouseEvents": true, "color": "#FFD700", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFD700", "fillOpacity": 0.45, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_df29fcf296ebf8770a72ea166a08adf8.bindTooltip(
+                `<div>
+                     <b>이태원</b><br>감성 점수: <b>25.3</b><br>장소 수: 3개 | 총 언급: 9회<br>장소: 트로이카, 와이키키비치포차, 메르씨 삐삐
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_ab10639e36933332fe26479a92d957a2 = L.polygon(
+                [[37.54053844321128, 126.99166045236825], [37.54205797974315, 126.9909125102009], [37.542273468334294, 126.98918382212503], [37.54096945948251, 126.98820315665314], [37.539449976130136, 126.98895111136036], [37.53923444845093, 126.99067971900182]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_ab10639e36933332fe26479a92d957a2.bindTooltip(
+                `<div>
+                     <b>이태원</b><br>감성 점수: <b>2.7</b><br>장소 수: 1개 | 총 언급: 2회<br>장소: 쿠시노리
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_02e8d6975d959b81e2346fdab805354e = L.polygon(
+                [[37.54162690681765, 126.99437001792839], [37.54314649652986, 126.993622088309], [37.5433620134492, 126.9918932942224], [37.54205797974315, 126.9909125102009], [37.54053844321128, 126.99166045236825], [37.540322887206024, 126.99338916601133]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_02e8d6975d959b81e2346fdab805354e.bindTooltip(
+                `<div>
+                     <b>이태원</b><br>감성 점수: <b>5.3</b><br>장소 수: 1개 | 총 언급: 2회<br>장소: 그래픽 이태원
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_051fcc49bb670e4351ef8a4937674efc = L.polygon(
+                [[37.539449976130136, 126.98895111136036], [37.54096945948251, 126.98820315665314], [37.54118491975262, 126.9864745745841], [37.53988093576129, 126.98549402764986], [37.53836150558748, 126.98624199488901], [37.53814600622727, 126.98797049653271]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_051fcc49bb670e4351ef8a4937674efc.bindTooltip(
+                `<div>
+                     <b>이태원</b><br>감성 점수: <b>2.7</b><br>장소 수: 1개 | 총 언급: 4회<br>장소: 해방촌
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_55dafd11cdc46cdfbd7a3a1dd389fb7a = L.polygon(
+                [[37.56897679255562, 126.98090360603848], [37.57049606104994, 126.9801552435745], [37.570710938812034, 126.97842612024688], [37.569406587196575, 126.9774454398635], [37.567887371863684, 126.97819381484805], [37.5676724549857, 126.97992285769762]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_55dafd11cdc46cdfbd7a3a1dd389fb7a.bindTooltip(
+                `<div>
+                     <b>을지로</b><br>감성 점수: <b>1.3</b><br>장소 수: 1개 | 총 언급: 8회<br>장소: 청계천
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_fd15bcf680d81b628e5f5eeb8ba6edd6 = L.polygon(
+                [[37.568331861218184, 126.98609118455983], [37.56985123625928, 126.98534287697673], [37.57006620977563, 126.9836136219409], [37.56876184736201, 126.98263275497922], [37.56724252548529, 126.98338107509717], [37.56702751285869, 126.98511024964417]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_fd15bcf680d81b628e5f5eeb8ba6edd6.bindTooltip(
+                `<div>
+                     <b>을지로</b><br>감성 점수: <b>9.3</b><br>장소 수: 1개 | 총 언급: 2회<br>장소: 서울커피상회
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_6e243aa6684898d2c3b199f315e152d8 = L.polygon(
+                [[37.56986513349683, 126.9967006878409], [37.57138472142286, 126.99595246028377], [37.571599847403434, 126.99422286135369], [37.570295424559276, 126.99324157050073], [37.56877588980232, 126.99398981062299], [37.56856072472136, 126.99571932903531]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_6e243aa6684898d2c3b199f315e152d8.bindTooltip(
+                `<div>
+                     <b>을지로</b><br>감성 점수: <b>1.3</b><br>장소 수: 1개 | 총 언급: 6회<br>장소: 세운상가
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_180abe012edef992aa81b1e98cce00ce = L.polygon(
+                [[37.56704113658408, 126.99646752678827], [37.56856072472136, 126.99571932903531], [37.56877588980232, 126.99398981062299], [37.567471505845816, 126.99300857047619], [37.56595197087877, 126.99375678079257], [37.56573676669885, 126.99548621869454]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_180abe012edef992aa81b1e98cce00ce.bindTooltip(
+                `<div>
+                     <b>을지로</b><br>감성 점수: <b>10.7</b><br>장소 수: 1개 | 총 언급: 6회<br>장소: 끄네들로
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_348df058ab4e0339c1b35e749ce8ebf0 = L.polygon(
+                [[37.5681302987532, 126.99917849753116], [37.56964994006163, 126.99843031234967], [37.56986513349683, 126.9967006878409], [37.56856072472136, 126.99571932903531], [37.56704113658408, 126.99646752678827], [37.56682590405204, 126.99819707077758]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_348df058ab4e0339c1b35e749ce8ebf0.bindTooltip(
+                `<div>
+                     <b>을지로</b><br>감성 점수: <b>4.0</b><br>장소 수: 1개 | 총 언급: 3회<br>장소: 우래옥
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_1fe3372fabc1c72c85b304c8bbc9c9fd = L.polygon(
+                [[37.546831864481135, 126.98693979652701], [37.5483512942054, 126.98619173991533], [37.54856660887625, 126.98446302255586], [37.547262532920264, 126.9834824422489], [37.54574315637027, 126.98423051138968], [37.545527802602884, 126.9859591483106]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_1fe3372fabc1c72c85b304c8bbc9c9fd.bindTooltip(
+                `<div>
+                     <b>이태원</b><br>감성 점수: <b>8.0</b><br>장소 수: 1개 | 총 언급: 2회<br>장소: 흑해
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var polygon_2bdbf2c4cac1b2a87452a8f7daff8216 = L.polygon(
+                [[37.55693901239202, 126.91707728036609], [37.55845700419479, 126.91632847027634], [37.5586710086175, 126.91460149076673], [37.55736706041161, 126.91362340164588], [37.55584912174279, 126.91437222407323], [37.55563507814686, 126.916099123286]],
+                {"bubblingMouseEvents": true, "color": "#ADFF2F", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ADFF2F", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            polygon_2bdbf2c4cac1b2a87452a8f7daff8216.bindTooltip(
+                `<div>
+                     <b>홍대</b><br>감성 점수: <b>9.3</b><br>장소 수: 1개 | 총 언급: 2회<br>장소: 내면의발견
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_910341a671ac6afae617d247cca5725c = L.circleMarker(
+                [37.56506447406918, 126.99293481089084],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_910341a671ac6afae617d247cca5725c.bindTooltip(
+                `<div>
+                     <b>올디스타코</b><br>을지로 | 식당<br>서울 중구 초동 17-4<br>언급 11회 | 감성점수 11
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_acc0741e52d9857d94637787d6130e3e = L.circleMarker(
+                [37.5658202486879, 126.990621155339],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_acc0741e52d9857d94637787d6130e3e.bindTooltip(
+                `<div>
+                     <b>산청숯불가든</b><br>을지로 | 식당<br>서울 중구 을지로3가 343-1<br>언급 10회 | 감성점수 11
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_eff962d445e4cf7be3ae0eab5f1ea1be = L.circleMarker(
+                [37.565847266782, 126.990474006135],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_eff962d445e4cf7be3ae0eab5f1ea1be.bindTooltip(
+                `<div>
+                     <b>달맞이광장바베큐</b><br>을지로 | 식당<br>서울 중구 을지로3가 343-11<br>언급 9회 | 감성점수 9
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b64c5a0dd60186fa32a47a1305010188 = L.circleMarker(
+                [37.5691469686793, 126.978647068151],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_b64c5a0dd60186fa32a47a1305010188.bindTooltip(
+                `<div>
+                     <b>청계천</b><br>을지로 | 랜드마크<br>서울 종로구 서린동 148<br>언급 8회 | 감성점수 6
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_285dda978b63abb78141824a0b781dce = L.circleMarker(
+                [37.56386699861269, 126.99212224782265],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_285dda978b63abb78141824a0b781dce.bindTooltip(
+                `<div>
+                     <b>페이퍼크레인</b><br>을지로 | 카페<br>서울 중구 초동 61-1<br>언급 7회 | 감성점수 13
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_5995cce252883113b0f995f1bb004302 = L.circleMarker(
+                [37.567543190147, 126.994348340573],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_5995cce252883113b0f995f1bb004302.bindTooltip(
+                `<div>
+                     <b>끄네들로</b><br>을지로 | 카페<br>서울 중구 입정동 281<br>언급 6회 | 감성점수 13
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_9906adb87cbc78563deddcca5dd931a0 = L.circleMarker(
+                [37.5651407804757, 126.98924713794588],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_9906adb87cbc78563deddcca5dd931a0.bindTooltip(
+                `<div>
+                     <b>을지로보석</b><br>을지로 | 식당<br>서울 중구 저동2가 84-11<br>언급 6회 | 감성점수 9
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_9ad64afc53bf218ad44661c1906a61e0 = L.circleMarker(
+                [37.5691379916808, 126.995236793525],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_9ad64afc53bf218ad44661c1906a61e0.bindTooltip(
+                `<div>
+                     <b>세운상가</b><br>을지로 | 랜드마크<br>서울 종로구 장사동 116-4<br>언급 6회 | 감성점수 6
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_9f5e0e83afcb1bdb8911421b1b37baf3 = L.circleMarker(
+                [37.56331914987354, 126.99150318210813],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_9f5e0e83afcb1bdb8911421b1b37baf3.bindTooltip(
+                `<div>
+                     <b>떼르세로 코스테스</b><br>을지로 | 식당<br>서울 중구 초동 158-15<br>언급 5회 | 감성점수 9
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_44ba2bdf238931b21fece50331636066 = L.circleMarker(
+                [37.5638326325067, 126.990390504995],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_44ba2bdf238931b21fece50331636066.bindTooltip(
+                `<div>
+                     <b>콘티뉴이티</b><br>을지로 | 카페<br>서울 중구 저동2가 47-15<br>언급 4회 | 감성점수 13
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_67286f2b6cb04ef9cd5f65e6e9cc38f1 = L.circleMarker(
+                [37.5654176256601, 126.992312241116],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_67286f2b6cb04ef9cd5f65e6e9cc38f1.bindTooltip(
+                `<div>
+                     <b>골수</b><br>을지로 | 식당<br>서울 중구 을지로3가 296-16<br>언급 4회 | 감성점수 8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_30278468108b03c5139964ed70a54a0f = L.circleMarker(
+                [37.5656093746103, 126.990118623814],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_30278468108b03c5139964ed70a54a0f.bindTooltip(
+                `<div>
+                     <b>백염막창</b><br>을지로 | 식당<br>서울 중구 을지로3가 344-15<br>언급 3회 | 감성점수 8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e8884025cdff1b6de391334637f9d993 = L.circleMarker(
+                [37.565897863309246, 126.99241632579671],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_e8884025cdff1b6de391334637f9d993.bindTooltip(
+                `<div>
+                     <b>르템플</b><br>을지로 | 바<br>서울 중구 을지로3가 295-3<br>언급 3회 | 감성점수 10
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_86f8557f4118154018976eb94581342a = L.circleMarker(
+                [37.565744602339784, 126.99110334968651],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_86f8557f4118154018976eb94581342a.bindTooltip(
+                `<div>
+                     <b>장만옥</b><br>을지로 | 식당<br>서울 중구 을지로3가 323<br>언급 3회 | 감성점수 8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_49bec99b99513517a1159a34a09d0909 = L.circleMarker(
+                [37.56821185731751, 126.99871865898974],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_49bec99b99513517a1159a34a09d0909.bindTooltip(
+                `<div>
+                     <b>우래옥</b><br>을지로 | 식당<br>서울 중구 주교동 118-1<br>언급 3회 | 감성점수 8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_0f519e2bef034bc34ee91423a9ae457e = L.circleMarker(
+                [37.56613954356158, 126.99732759512656],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_0f519e2bef034bc34ee91423a9ae457e.bindTooltip(
+                `<div>
+                     <b>카페시나브로</b><br>을지로 | 카페<br>서울 중구 을지로4가 323<br>언급 2회 | 감성점수 12
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_f6cb6473fc949bf7ed4ca60a7afc789c = L.circleMarker(
+                [37.5623279452247, 126.990110002521],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_f6cb6473fc949bf7ed4ca60a7afc789c.bindTooltip(
+                `<div>
+                     <b>루이 티하우스</b><br>을지로 | 카페<br>서울 중구 충무로2가 50-1<br>언급 2회 | 감성점수 12
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_5fe13eae48ba27fa6df79422f9d46912 = L.circleMarker(
+                [37.569636163472815, 126.98406216881071],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_5fe13eae48ba27fa6df79422f9d46912.bindTooltip(
+                `<div>
+                     <b>서울커피상회</b><br>을지로 | 카페<br>서울 종로구 관철동 45-8<br>언급 2회 | 감성점수 12
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_ed92320d0e40a46fc8aad28b1b038e76 = L.circleMarker(
+                [37.56405800528456, 126.99205431587963],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_ed92320d0e40a46fc8aad28b1b038e76.bindTooltip(
+                `<div>
+                     <b>도야집</b><br>을지로 | 식당<br>서울 중구 초동 64-1<br>언급 2회 | 감성점수 7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_a457d6cd6ca0fe6c32028573da324a25 = L.circleMarker(
+                [37.5659653443993, 126.991077289902],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF3333", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_a457d6cd6ca0fe6c32028573da324a25.bindTooltip(
+                `<div>
+                     <b>대동옥</b><br>을지로 | 식당<br>서울 중구 을지로3가 334-8<br>언급 2회 | 감성점수 7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b91c7f7be16c75e6ef9a997c101ed6b8 = L.circleMarker(
+                [37.5443222301513, 127.037617759165],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00CCFF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_b91c7f7be16c75e6ef9a997c101ed6b8.bindTooltip(
+                `<div>
+                     <b>서울숲</b><br>성수동 | 랜드마크<br>서울 성동구 성수동1가 678-1<br>언급 16회 | 감성점수 8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_dffd2e38427ebe24cea4fdcb48a95a41 = L.circleMarker(
+                [37.544230548347, 127.059084611827],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00CCFF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_dffd2e38427ebe24cea4fdcb48a95a41.bindTooltip(
+                `<div>
+                     <b>용용선생 마라도원</b><br>성수동 | 식당<br>서울 성동구 성수동2가 277-56<br>언급 6회 | 감성점수 9
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_a4f7abcc2aca7c8af19c3a52da1cd551 = L.circleMarker(
+                [37.5487423625604, 127.054261762225],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00CCFF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_a4f7abcc2aca7c8af19c3a52da1cd551.bindTooltip(
+                `<div>
+                     <b>오밀</b><br>성수동 | 식당<br>서울 성동구 성수동2가 299-187<br>언급 6회 | 감성점수 9
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_c3f2a4b2622d5c6a82e53fa3106f8268 = L.circleMarker(
+                [37.54868976255, 127.048854789779],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00CCFF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_c3f2a4b2622d5c6a82e53fa3106f8268.bindTooltip(
+                `<div>
+                     <b>브리비트</b><br>성수동 | 식당<br>서울 성동구 성수동1가 13-191<br>언급 5회 | 감성점수 9
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_4c7fd2f1382fe8ddc651b3f6ca68bfae = L.circleMarker(
+                [37.5460826295749, 127.043321867062],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00CCFF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_4c7fd2f1382fe8ddc651b3f6ca68bfae.bindTooltip(
+                `<div>
+                     <b>5TO7</b><br>성수동 | 카페<br>서울 성동구 성수동1가 668-136<br>언급 4회 | 감성점수 13
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_331f96e1983c6c20e90f49720ccfedf0 = L.circleMarker(
+                [37.54294488785, 127.055226162255],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00CCFF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_331f96e1983c6c20e90f49720ccfedf0.bindTooltip(
+                `<div>
+                     <b>베통 성수</b><br>성수동 | 카페<br>서울 성동구 성수동2가 315-47<br>언급 3회 | 감성점수 13
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e90da38e2233bd58581fdb1383d3973f = L.circleMarker(
+                [37.5402765104495, 127.059981037334],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00CCFF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_e90da38e2233bd58581fdb1383d3973f.bindTooltip(
+                `<div>
+                     <b>성수율 카페</b><br>성수동 | 카페<br>서울 성동구 성수동2가 269-212<br>언급 3회 | 감성점수 13
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_0edbf13d38671ddf781709e92208d45e = L.circleMarker(
+                [37.5427802289338, 127.054745135469],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00CCFF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_0edbf13d38671ddf781709e92208d45e.bindTooltip(
+                `<div>
+                     <b>마를리</b><br>성수동 | 카페<br>서울 성동구 성수동2가 315-55<br>언급 3회 | 감성점수 13
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_fade042a2af9d955f6ca77dff00739f7 = L.circleMarker(
+                [37.5435934086824, 127.053703568622],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00CCFF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_fade042a2af9d955f6ca77dff00739f7.bindTooltip(
+                `<div>
+                     <b>도토리오븐</b><br>성수동 | 카페<br>서울 성동구 성수동2가 316-53<br>언급 3회 | 감성점수 13
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d95cecafcd2a8aba715e98ae322b6dcb = L.circleMarker(
+                [37.5493469543015, 127.045695676352],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00CCFF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_d95cecafcd2a8aba715e98ae322b6dcb.bindTooltip(
+                `<div>
+                     <b>진작다이닝</b><br>성수동 | 식당<br>서울 성동구 성수동1가 656-1250<br>언급 3회 | 감성점수 8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b3df204eb3eba7d1b2f616982fdcdbd6 = L.circleMarker(
+                [37.5410612323475, 127.056424179798],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00CCFF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_b3df204eb3eba7d1b2f616982fdcdbd6.bindTooltip(
+                `<div>
+                     <b>bd버거</b><br>성수동 | 식당<br>서울 성동구 성수동2가 322-20<br>언급 3회 | 감성점수 8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_ce10d9dcdae1ec037f718b437bd86df8 = L.circleMarker(
+                [37.54243256842165, 127.05639353022181],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00CCFF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_ce10d9dcdae1ec037f718b437bd86df8.bindTooltip(
+                `<div>
+                     <b>성수동 카페거리</b><br>성수동 | 거리<br>서울 성동구 성수동2가 276-5<br>언급 3회 | 감성점수 10
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_a066c6230a3e53b06038b0bbb6506b08 = L.circleMarker(
+                [37.5418538021167, 127.05517330717],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00CCFF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_a066c6230a3e53b06038b0bbb6506b08.bindTooltip(
+                `<div>
+                     <b>우스블랑</b><br>성수동 | 카페<br>서울 성동구 성수동2가 321-49<br>언급 2회 | 감성점수 11
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_f6c31d5212a09a30643a7909ef457c1f = L.circleMarker(
+                [37.5474747499971, 127.04056832675],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00CCFF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_f6c31d5212a09a30643a7909ef457c1f.bindTooltip(
+                `<div>
+                     <b>스페셜땡스투</b><br>성수동 | 카페<br>서울 성동구 성수동1가 685-431<br>언급 2회 | 감성점수 12
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_4c953fa5be226eeed5c74e60f6e15e17 = L.circleMarker(
+                [37.543036570643, 127.053748431034],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00CCFF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_4c953fa5be226eeed5c74e60f6e15e17.bindTooltip(
+                `<div>
+                     <b>마루마끼</b><br>성수동 | 식당<br>서울 성동구 성수동2가 316-43<br>언급 2회 | 감성점수 7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_df13220fe4a3be2730fb6b926adeab8f = L.circleMarker(
+                [37.5465359959002, 127.045286584884],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00CCFF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_df13220fe4a3be2730fb6b926adeab8f.bindTooltip(
+                `<div>
+                     <b>미테이블</b><br>성수동 | 식당<br>서울 성동구 성수동1가 656-385<br>언급 2회 | 감성점수 7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_5dbbea56dce09bf0a854b93f83746b9b = L.circleMarker(
+                [37.543662679885585, 127.0539355871467],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00CCFF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_5dbbea56dce09bf0a854b93f83746b9b.bindTooltip(
+                `<div>
+                     <b>아임도넛</b><br>성수동 | 카페<br>서울 성동구 성수동2가 316-50<br>언급 2회 | 감성점수 11
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_900a5bcf6377d4ee6b98a7616ef45561 = L.circleMarker(
+                [37.5483236456871, 127.053720541592],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#00CCFF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_900a5bcf6377d4ee6b98a7616ef45561.bindTooltip(
+                `<div>
+                     <b>전자방</b><br>성수동 | 식당<br>서울 성동구 성수동2가 299-157<br>언급 2회 | 감성점수 7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d874160c8ccaf4306f2af1d658f41e93 = L.circleMarker(
+                [37.558803479324, 126.925338455597],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_d874160c8ccaf4306f2af1d658f41e93.bindTooltip(
+                `<div>
+                     <b>경의선숲길</b><br>홍대 | 거리<br>서울 마포구 동교동 190-1<br>언급 11회 | 감성점수 10
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_cc007e50192dada5c8b6975a9f6a71f6 = L.circleMarker(
+                [37.5497071933215, 126.917495034617],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_cc007e50192dada5c8b6975a9f6a71f6.bindTooltip(
+                `<div>
+                     <b>육지</b><br>홍대 | 식당<br>서울 마포구 서교동 396-45<br>언급 8회 | 감성점수 9
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_ae6cb8c4308b56603ec60698e56fb9da = L.circleMarker(
+                [37.553702008954, 126.922505224188],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_ae6cb8c4308b56603ec60698e56fb9da.bindTooltip(
+                `<div>
+                     <b>스시오</b><br>홍대 | 식당<br>서울 마포구 서교동 358-8<br>언급 6회 | 감성점수 9
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_0b660998b79ae647ee661d4a85da81bb = L.circleMarker(
+                [37.54954136414458, 126.92139033603667],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_0b660998b79ae647ee661d4a85da81bb.bindTooltip(
+                `<div>
+                     <b>PZPZ(피지피지)</b><br>홍대 | 식당<br>서울 마포구 서교동 408-11<br>언급 6회 | 감성점수 9
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_ed6de46e2824b1e314da2cd5e00a7c46 = L.circleMarker(
+                [37.5450615631976, 126.925504925373],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_ed6de46e2824b1e314da2cd5e00a7c46.bindTooltip(
+                `<div>
+                     <b>만월다방</b><br>홍대 | 카페<br>서울 마포구 상수동 356-7<br>언급 5회 | 감성점수 14
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_499b2be69e8f501fbb4f5b2275a7c193 = L.circleMarker(
+                [37.555755152133266, 126.92636911508235],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_499b2be69e8f501fbb4f5b2275a7c193.bindTooltip(
+                `<div>
+                     <b>훌리건커피</b><br>홍대 | 카페<br>서울 마포구 서교동 332-28<br>언급 5회 | 감성점수 14
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_0dcbb28a9ba6ea15711150340e376f44 = L.circleMarker(
+                [37.555186826703, 126.92246520784863],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_0dcbb28a9ba6ea15711150340e376f44.bindTooltip(
+                `<div>
+                     <b>홍익대학교</b><br>홍대 | 랜드마크<br>서울 마포구 동교동 162-5<br>언급 4회 | 감성점수 5
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_f4fb121ba3598740134ecd5425bf9ccc = L.circleMarker(
+                [37.54807581094916, 126.9205986081996],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_f4fb121ba3598740134ecd5425bf9ccc.bindTooltip(
+                `<div>
+                     <b>달콤한거짓말</b><br>홍대 | 카페<br>서울 마포구 상수동 317-11<br>언급 3회 | 감성점수 13
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_4ef83be066b2944593269eaa4c09bfe5 = L.circleMarker(
+                [37.5560942906102, 126.924097372948],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_4ef83be066b2944593269eaa4c09bfe5.bindTooltip(
+                `<div>
+                     <b>중경식객</b><br>홍대 | 식당<br>서울 마포구 동교동 164-20<br>언급 3회 | 감성점수 8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_303ad1e2cbeac321a7cc06e56091972a = L.circleMarker(
+                [37.5512059328602, 126.922031375914],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_303ad1e2cbeac321a7cc06e56091972a.bindTooltip(
+                `<div>
+                     <b>너가술집사장</b><br>홍대 | 바<br>서울 마포구 서교동 363-21<br>언급 3회 | 감성점수 10
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e91cfa158d7b002c33a787674d70a669 = L.circleMarker(
+                [37.54859142916518, 126.91831895917666],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_e91cfa158d7b002c33a787674d70a669.bindTooltip(
+                `<div>
+                     <b>피자네버슬립스</b><br>홍대 | 식당<br>서울 마포구 서교동 400-13<br>언급 3회 | 감성점수 8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_166530eb108ecad8861b80f9c9617fbf = L.circleMarker(
+                [37.5571921297692, 126.924760602353],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_166530eb108ecad8861b80f9c9617fbf.bindTooltip(
+                `<div>
+                     <b>하이디라오 홍대점</b><br>홍대 | 식당<br>서울 마포구 동교동 166-14<br>언급 3회 | 감성점수 8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_fadd2c046dae2fda5cebf1e461665050 = L.circleMarker(
+                [37.5589137902772, 126.917787071063],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_fadd2c046dae2fda5cebf1e461665050.bindTooltip(
+                `<div>
+                     <b>연남동</b><br>홍대 | 거리<br>서울 마포구 연남동 487-401<br>언급 3회 | 감성점수 7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_dc5a843f6f4b8eeaf639bd8a29ba4bbb = L.circleMarker(
+                [37.557459268386445, 126.92545976376215],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_dc5a843f6f4b8eeaf639bd8a29ba4bbb.bindTooltip(
+                `<div>
+                     <b>오밀</b><br>홍대 | 식당<br>서울 마포구 동교동 166-3<br>언급 3회 | 감성점수 8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_06e3c7f893f9001d8abf8b431fcc8343 = L.circleMarker(
+                [37.55687155662541, 126.92225974641987],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_06e3c7f893f9001d8abf8b431fcc8343.bindTooltip(
+                `<div>
+                     <b>구우움베이커리</b><br>홍대 | 카페<br>서울 마포구 동교동 158-10<br>언급 2회 | 감성점수 11
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_f02ac39b17794f6595126c117ba2550b = L.circleMarker(
+                [37.5560870399809, 126.916048424246],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_f02ac39b17794f6595126c117ba2550b.bindTooltip(
+                `<div>
+                     <b>내면의발견</b><br>홍대 | 카페<br>서울 마포구 서교동 460-2<br>언급 2회 | 감성점수 12
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_f739388bd62ef96d57fd6cc982524479 = L.circleMarker(
+                [37.5530062535772, 126.92500925708],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_f739388bd62ef96d57fd6cc982524479.bindTooltip(
+                `<div>
+                     <b>면식당</b><br>홍대 | 식당<br>서울 마포구 서교동 338-46<br>언급 2회 | 감성점수 7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_7266cea0a3afa473e4944adc7c44b588 = L.circleMarker(
+                [37.561038650759, 126.92502044803],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_7266cea0a3afa473e4944adc7c44b588.bindTooltip(
+                `<div>
+                     <b>우삼집</b><br>홍대 | 식당<br>서울 마포구 연남동 260-39<br>언급 2회 | 감성점수 7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_de8c538a3c92050f5789c462312b57ee = L.circleMarker(
+                [37.5488873814468, 126.918935376816],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FFFF00", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_de8c538a3c92050f5789c462312b57ee.bindTooltip(
+                `<div>
+                     <b>단막</b><br>홍대 | 식당<br>서울 마포구 서교동 400-24<br>언급 2회 | 감성점수 7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_089d121b72e4ee1050877f7df2727f86 = L.circleMarker(
+                [37.5348756358266, 126.993222778372],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_089d121b72e4ee1050877f7df2727f86.bindTooltip(
+                `<div>
+                     <b>와이키키 유토피아</b><br>이태원 | 바<br>서울 용산구 이태원동 119-7<br>언급 11회 | 감성점수 13
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_198605043e0c2b53f21ff6adafdbdf86 = L.circleMarker(
+                [37.5351306754053, 126.99428855905],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_198605043e0c2b53f21ff6adafdbdf86.bindTooltip(
+                `<div>
+                     <b>김실력포차</b><br>이태원 | 식당<br>서울 용산구 이태원동 112-6<br>언급 7회 | 감성점수 9
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_ffcb56f2d25ebbe274c93a4746be84e8 = L.circleMarker(
+                [37.533984672523715, 126.9959948114923],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_ffcb56f2d25ebbe274c93a4746be84e8.bindTooltip(
+                `<div>
+                     <b>이코복스커피 스튜디오</b><br>이태원 | 카페<br>서울 용산구 이태원동 136-6<br>언급 6회 | 감성점수 14
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_9218a299460c16427cc5ba26f7cc99b6 = L.circleMarker(
+                [37.5390142761733, 126.986688076957],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_9218a299460c16427cc5ba26f7cc99b6.bindTooltip(
+                `<div>
+                     <b>해방촌</b><br>이태원 | 거리<br>서울 용산구 용산동2가 48<br>언급 4회 | 감성점수 7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_2de9d30adb009d6c502fa597c3d000cf = L.circleMarker(
+                [37.534078188601, 126.992224946391],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_2de9d30adb009d6c502fa597c3d000cf.bindTooltip(
+                `<div>
+                     <b>트로이카</b><br>이태원 | 식당<br>서울 용산구 이태원동 72-33<br>언급 3회 | 감성점수 8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_605f32716172bd4584b35ced7794ab40 = L.circleMarker(
+                [37.53480443131473, 126.9927928446203],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_605f32716172bd4584b35ced7794ab40.bindTooltip(
+                `<div>
+                     <b>야상해</b><br>이태원 | 식당<br>서울 용산구 이태원동 119-16<br>언급 3회 | 감성점수 8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_28d27705eb917bac935d7e175982aabc = L.circleMarker(
+                [37.533789828899, 126.991647959146],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_28d27705eb917bac935d7e175982aabc.bindTooltip(
+                `<div>
+                     <b>와이키키비치포차</b><br>이태원 | 식당<br>서울 용산구 이태원동 64-27<br>언급 3회 | 감성점수 8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_89eafc398261c49c8da376df0f0a931f = L.circleMarker(
+                [37.5325203040935, 126.991447845207],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_89eafc398261c49c8da376df0f0a931f.bindTooltip(
+                `<div>
+                     <b>메르씨 삐삐</b><br>이태원 | 식당<br>서울 용산구 이태원동 63-41<br>언급 3회 | 감성점수 8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_a92ed2e66f7a44aac7bfd66541dc55c0 = L.circleMarker(
+                [37.53209497260624, 126.99066950389641],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_a92ed2e66f7a44aac7bfd66541dc55c0.bindTooltip(
+                `<div>
+                     <b>용산구청 주차장</b><br>이태원 | 랜드마크<br>서울 용산구 이태원동 34-87<br>언급 3회 | 감성점수 5
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_78510304c4f150cda63e485168e5f258 = L.circleMarker(
+                [37.533984672523715, 126.9959948114923],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_78510304c4f150cda63e485168e5f258.bindTooltip(
+                `<div>
+                     <b>이코복스</b><br>이태원 | 카페<br>서울 용산구 이태원동 136-6<br>언급 3회 | 감성점수 13
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_6970f5ea7c40f35621d59d4ce10dbe4d = L.circleMarker(
+                [37.5340836835415, 126.993719539324],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_6970f5ea7c40f35621d59d4ce10dbe4d.bindTooltip(
+                `<div>
+                     <b>별밤포차</b><br>이태원 | 바<br>서울 용산구 이태원동 128-4<br>언급 3회 | 감성점수 10
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_47929417e728312ab99a73d345b3b329 = L.circleMarker(
+                [37.53175450954812, 126.99226704850244],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_47929417e728312ab99a73d345b3b329.bindTooltip(
+                `<div>
+                     <b>나무아래류</b><br>이태원 | 카페<br>서울 용산구 이태원동 36-14<br>언급 2회 | 감성점수 12
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_c2e53e1980ee50327492d9b9590744ab = L.circleMarker(
+                [37.5459950503151, 126.985249715576],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_c2e53e1980ee50327492d9b9590744ab.bindTooltip(
+                `<div>
+                     <b>흑해</b><br>이태원 | 카페<br>서울 용산구 용산동2가 1-20<br>언급 2회 | 감성점수 11
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_83b6a2fecc237b34a1519e709d549381 = L.circleMarker(
+                [37.5339305932361, 126.995463052453],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_83b6a2fecc237b34a1519e709d549381.bindTooltip(
+                `<div>
+                     <b>보광리광장</b><br>이태원 | 식당<br>서울 용산구 이태원동 132-1<br>언급 2회 | 감성점수 7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_136b61c71810160644a0ed36808435bf = L.circleMarker(
+                [37.533734128684394, 126.99438483501056],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_136b61c71810160644a0ed36808435bf.bindTooltip(
+                `<div>
+                     <b>꾸띠자르당</b><br>이태원 | 식당<br>서울 용산구 이태원동 131-34<br>언급 2회 | 감성점수 7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_ae816d5c363602d7f265bf24ea1d6870 = L.circleMarker(
+                [37.5350764756171, 126.991898992157],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_ae816d5c363602d7f265bf24ea1d6870.bindTooltip(
+                `<div>
+                     <b>아지양</b><br>이태원 | 식당<br>서울 용산구 이태원동 118-12<br>언급 2회 | 감성점수 7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_568f4cf4a55546f07c90a6db379c0f43 = L.circleMarker(
+                [37.54092022170618, 126.99004267702776],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_568f4cf4a55546f07c90a6db379c0f43.bindTooltip(
+                `<div>
+                     <b>쿠시노리</b><br>이태원 | 식당<br>서울 용산구 이태원동 255-42<br>언급 2회 | 감성점수 7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_90e4a1e7b79c0f754f0b5de4a41af654 = L.circleMarker(
+                [37.53381701627662, 126.99429092204419],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_90e4a1e7b79c0f754f0b5de4a41af654.bindTooltip(
+                `<div>
+                     <b>이진칸</b><br>이태원 | 식당<br>서울 용산구 이태원동 131-3<br>언급 2회 | 감성점수 7
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_b72f0eda6ce65724b4f02872c55cc1c0 = L.circleMarker(
+                [37.5409312792296, 126.993584314814],
+                {"bubblingMouseEvents": true, "color": "#000000", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#FF00FF", "fillOpacity": 1.0, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 1}
+            ).addTo(map_8e55f8b7a153902d94f42dd35a13dcb3);
+        
+    
+            circle_marker_b72f0eda6ce65724b4f02872c55cc1c0.bindTooltip(
+                `<div>
+                     <b>그래픽 이태원</b><br>이태원 | 카페<br>서울 용산구 이태원동 258-166<br>언급 2회 | 감성점수 9
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+</script>
+</html>
